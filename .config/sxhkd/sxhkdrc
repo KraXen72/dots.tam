@@ -1,0 +1,31 @@
+# Iconize (minimize) window // Close window w/ Picom flicker workaround
+super + {g,x}
+  {xdotool getactivewindow windowminimize,tamwm -x}
+
+# Launcher
+super + r
+  gmrun
+
+# Screenshots
+super + s
+  scrot && dunstify -r 1 "Screenshot taken."
+
+super + shift + @s
+  scrot -s && dunstify -r 1 "Screenshot taken."
+
+# run or raise
+super + {w,b,t,f,c}
+  app={irc,ncmpcpp,ranger,vivaldi,vim} && jumpapp -R -f -c "$app" tamwm -l $app
+
+# More run or raise
+super + shift + {w}
+  {jumpapp -f -c "spare" tamwm -l spare}
+
+super + {h,l}
+  tamwm -d {dprev,dnext}
+
+super + {1-9}
+  tamwm -d dnum {0-8}
+
+super + Return
+  /home/sensei/bash_scripts/init.sh
