@@ -1,0 +1,243 @@
+#!/bin/bash
+# ==== TAMWM ==================================================================
+# Multi-purpose window-managing script.
+# Dependencies: wmctrl, xdotool
+# Features:
+#  - Launch_app applications with preset geometry
+#  - Workaround for closing ARGB windows with no flicker using Picom fade-out.
+#  - Apply preset layouts on workspace (desktop) change
+
+usage() {
+  local cmd=$(basename "${BASH_SOURCE[0]}")
+  echo "Usage: $cmd [OPTION] [ARG]
+-l       Launch_app and position a program (irc ncmpcpp ranger vim vivaldi
+         spare 3terms)
+-x       Workaround that closes a window with no flicker using Picom
+-d       Desktop manager (dprev dnext)"
+}
+
+main() {
+  local instr
+  instr="usage"
+  while getopts l:xd: opt; do
+    case "$opt" in
+      l) instr="launch_app";;
+      x) instr="close_window_workaround";;
+      d) instr="manage_dtops";;
+    esac
+  done
+  shift
+  check_prereqs &&
+  $instr "$@"
+}
+
+
+
+# ===== Main functions ========================================================
+# =============================================================================
+
+launch_app() {
+  local cls new_cls pos size existing_instances
+  local tml="gnome-terminal --window-with-profile noel --geometry"
+  local xdo_on_cls="xdotool search --onlyvisible --sync --class"
+  local tml_cls="Gnome-terminal"
+  pre_cmds()   { :; }
+  after_cmds() { :; }
+
+  case $1 in
+    irc|weechat)
+      cls=$tml_cls; new_cls="irc"
+      cmd() { $tml 79x22+1950+63 -- sh -c "mosh takat.su -- tmux a"; };;
+
+    ncmpcpp|music)
+      cls=$tml_cls; new_cls="ncmpcpp"
+      cmd() { $tml 79x13+1950+471 -- sh -c "ncmpcpp; clear; exec zsh"; }
+      after_cmds() { openbox_actions to_bottom; };;
+
+    ranger|r|kranger|fm)
+      cls=$tml_cls; new_cls="ranger"
+      cmd() { [[ -z $(mount | grep takat > /dev/null) ]] &&
+        sshfs alpha@takat.su:/home/alpha/ /media/sensei/takatsu &
+        $tml 79x18+1950+735 -- sh -c "r /media/kokone/anime; exec zsh"; };;
+
+    3terms)
+      cmd() { launch_app irc; launch_app ncmpcpp; launch_app ranger; };;
+
+    spare)
+      cls=$tml_cls; new_cls="spare"
+      cmd() { $tml 79x22+1950+63; }
+      pre_cmds() { xdotool search --onlyvisible --class irc windowminimize; } ;;
+
+    vim_one|vim1|nvim1|code1)
+      cls=$tml_cls; new_cls="vim_one"
+      cmd() { gnome-terminal --window-with-profile noel-notrans --geometry \
+              87x60+37+63 -- sh -c "vim -c 'OpenSession small'; exec zsh"; }
+      after_cmds() { wmctrl -vr $new_cls -t 0; };;
+
+    vim2|nvim2|code2)
+      cls=$tml_cls; new_cls="vim_two"
+      cmd() { gnome-terminal --window-with-profile noel-notrans --geometry \
+              175x60+37+63 -- sh -c "vim -c 'OpenSession large'; exec zsh"; }
+      after_cmds() { wmctrl -vr $new_cls -t 1; };;
+
+      vim|nvim|code)
+        cmd() { launch_app vim2; launch_app vim1; };;
+
+     vivaldi|web|browser| main )
+      cls="Vivaldi-stable"; new_cls="vivaldi"; pos="703 63"; size="1208 978"
+      cmd() { vivaldi & };;
+      # TODO: Layout 1 - pos 1313 63 size 1208 978
+
+    *)
+      printf '%s\n' "Available -o arguments:" \
+        "irc ncmpcpp ranger vivaldi vim1 vim2 spare 3terms"; exit 1 ;;
+  esac
+
+  existing_instances=$(count_cls $cls)
+
+  pre_cmds
+  cmd &> /dev/null
+  until [[ $(count_cls $cls) -gt $existing_instances ]]; do sleep .1; done
+
+  [[ -n "$new_cls" ]] && {
+    $xdo_on_cls $cls set_window --name $new_cls
+    $xdo_on_cls $cls set_window --class $new_cls
+    cls=$new_cls
+  }
+
+  $xdo_on_cls $cls windowfocus --sync
+  [[ -n "$pos" ]]  && $xdo_on_cls $cls windowmove $pos
+  [[ -n "$size" ]] && $xdo_on_cls $cls windowsize $size
+
+  after_cmds
+}
+
+close_window_workaround(){
+  # If no argument passed, operate on active window
+  local active target
+  active=$(xprop -root _NET_ACTIVE_WINDOW|cut -d ' ' -f 5|sed -e 's/../0&/2')
+  [[ -z "$1" ]] && target=$active
+  [[ -n "$1" ]] && target=$1
+  xdotool windowminimize $target
+  wmctrl -ic $target
+}
+
+# ==== Desktop Management
+manage_dtops(){
+  local instr xdo_on_cls="xdotool search --onlyvisible --class"
+
+  case "$1" in
+    dnext) instr="dnext";;
+    dprev) instr="dprev";;
+    dnum)  instr="dnum $2";;
+    *) echo "Available -d argument: dnext, dprev, dnum n"; exit;;
+  esac
+
+  $instr $*
+}
+
+dnext() {
+  local destination=$(($(active_dtop)+1))
+  [[ $(active_dtop) == $(last_dtop) ]] && destination=0
+  switch_to_dtop $destination
+}
+
+dprev() {
+  local destination=$(($(active_dtop)-1))
+  [[ $(active_dtop) == 0 ]] && destination=$(last_dtop)
+  switch_to_dtop $destination
+}
+
+dnum(){
+  switch_to_dtop $1
+}
+
+
+
+# ===== Helper functions ======================================================
+# =============================================================================
+
+# ==== Main block helpers
+check_prereqs() {
+  has_command() { hash "$1" 2>/dev/null; }
+  die() { printf '%s\n' "$1" >&2; exit 1; }
+  has_command wmctrl || die 'Error: Aborted. Please install wmctrl.'
+  has_command xdotool || die 'Error: Aborted. Please install xdotool.'
+}
+
+# ==== Launch app helpers
+count_cls() {
+  wmctrl -lx | cut -d' ' -f4 | grep -c "$1"
+}
+ 
+openbox_actions() {
+  case $1 in
+    to_bottom) xdotool key ctrl+alt+shift+super+1 ;;
+    to_middle) xdotool key ctrl+alt+shift+super+2 ;;
+    to_top)    xdotool key ctrl+alt+shift+super+3 ;;
+  esac
+}
+
+# ==== Desktop management helpers
+active_dtop() {
+  echo $(wmctrl -d | grep "*" | cut -d' ' -f1); 
+}
+
+  last_dtop() {
+    echo $(wmctrl -d | tail -1 | cut -d' ' -f1)
+  }
+
+switch_to_dtop(){
+  echo "now applying layout"
+  apply_layout $1
+  echo "now switching dtop"
+  wmctrl -s $1
+}
+
+send_to_dtop() {
+  # eg: target_layout=2 && send_to_dtop irc ranger ncmpcpp
+  #     send_to_dtop -p "703 63" -s "1208 978" vivaldi
+  local OPTIND pos="" size=""
+  while getopts p:s: opt; do
+    case "$opt" in
+      p) pos="$OPTARG" ;;
+      s) size="$OPTARG" ;;
+    esac
+  done
+  shift $(( OPTIND - 1 ))
+
+  [[ -z $target_layout ]] && local target_layout=$(active_dtop)
+
+  for app in "$@"; do
+    local all_open_instances=$(xdotool search --class $app)
+    for instance in $all_open_instances; do
+      echo "looping thru"
+      xdotool set_desktop_for_window $instance $target_layout
+    done
+  done
+  echo "moving vivaldi now"
+  [[ -n "$pos" ]]  && $xdo_on_cls "$1" windowmove $pos &
+  [[ -n "$size" ]] && $xdo_on_cls "$1" windowsize $size &
+}
+
+apply_layout() {
+  local target_layout=$(active_dtop)
+  [[ -n $1 ]] && target_layout=$1
+
+  case $target_layout in
+      0)
+        send_to_dtop irc ncmpcpp Yad ranger vim_one &
+        send_to_dtop -p "703 63" -s "1208 978" vivaldi
+        ;;
+      1)
+        send_to_dtop vim_two &
+        send_to_dtop -p "1313 63" -s "1208 978" vivaldi
+        ;;
+      2)
+        send_to_dtop irc ncmpcpp Yad ranger vim_two &
+        ;;
+    esac
+}
+
+
+[[ "${BASH_SOURCE[0]}" == "$0" ]] && main "$@"

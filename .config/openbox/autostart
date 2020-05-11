@@ -1,0 +1,21 @@
+# These things are run when an Openbox X Session is started.
+
+/home/sensei/.fehbg
+nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }"
+redshift -r -l 47.71\:2.76 &
+if test -x @libexecdir@/gnome-settings-daemon >/dev/null; then
+  @libexecdir@/gnome-settings-daemon &
+elif which gnome-settings-daemon >/dev/null; then
+  gnome-settings-daemon &
+fi
+picom -c --corner-radius 5 &
+sxhkd &
+polybar tam &
+dunst &
+setxkbmap -option shift:both_capslock &
+xcape -e 'Shift_R=Return' &
+/home/sensei/bash_scripts/layout.sh &
+xset s off -dpms
+xset s noblank
+sleep 1
+tamwm -l 3terms

@@ -1,0 +1,82 @@
+ncmpcpp_directory = ~/.ncmpcpp
+lyrics_directory = ~/.lyrics
+mpd_host = localhost
+mpd_port = 6600
+mpd_music_dir = ~/music
+
+## - 0 - default window color (discards all other colors)
+## - 1 - black
+## - 2 - red
+## - 3 - green
+## - 4 - yellow
+## - 5 - blue
+## - 6 - magenta
+## - 7 - cyan
+## - 8 - white
+## - 9 - end of current color
+
+#### Cover art
+execute_on_song_change="~/.ncmpcpp/art.sh"
+
+#### Playlist formatting
+song_list_format = "$6 {%a »$4 %t $/r                                                                                                                                       $R                             }|{%f$/r                                                                                                                                     }"
+now_playing_prefix = "$b$6  »"
+now_playing_suffix = "$/b"
+playlist_display_mode = "classic"
+
+#### Progressbar
+#### can consider »─▬▐▌░▒▓█━⠤ ⠤ ▪▃
+progressbar_look = "▄▄▄"
+progressbar_elapsed_color = "white"
+progressbar_color = "black"
+
+#### Colors
+header_window_color = "black"
+main_window_color = magenta
+alternative_ui_separator_color = black
+
+#### General formatting
+titles_visibility = "no"
+header_visibility = "no"
+statusbar_visibility = "no"
+playlist_show_remaining_time = yes
+volume_color = "black:b"
+alternative_header_first_line_format = $6$b» {%f} «$/b
+alternative_header_second_line_format = $4{%b}|{/%D/}
+user_interface = alternative
+
+#### Misc stuff
+discard_colors_if_item_is_selected = "yes"
+autocenter_mode = "yes"
+centered_cursor = "yes"
+lastfm_preferred_language = "ja"
+mouse_support = "yes"
+colors_enabled = "yes"
+mpd_crossfade_time = "0"
+follow_now_playing_lyrics = "yes"
+store_lyrics_in_song_dir = "yes"
+song_window_title_format = ncmpcpp
+
+#### Mappings
+def_key "h" previous_column
+def_key "j" scroll_down
+def_key "k" scroll_up
+def_key "l" next_column
+def_key "ctrl-u" page_up
+def_key "ctrl-d" page_down
+def_key "." show_lyrics
+def_key "n" next_found_item
+def_key "N" previous_found_item
+def_key "J" move_sort_order_down
+def_key "K" move_sort_order_up
+def_key "d" delete_playlist_items
+def_key "d" delete_browser_items
+
+#### Visualizer stuff
+visualizer_type = wave_filled
+visualizer_look = ■■
+visualizer_fifo_path = "/tmp/mpd.fifo"
+visualizer_output_name = "my_fifo"
+visualizer_in_stereo = "no"
+visualizer_sync_interval = "30"
+visualizer_color = blue, cyan, green, yellow, magenta, red

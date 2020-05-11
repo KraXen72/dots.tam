@@ -1,0 +1,212 @@
+/*  # # # # # # # # # # # # # # lpf's Vivaldi theme # # # # # # # # # # # # #
+ *  #########################################################################
+ *  You can see it on this workflow webm: https://u.teknik.io/xLmC5.webm
+ *
+ *  LINUX: /opt/vivaldi/resources/vivaldi/style/custom.css
+ *  WINDOWS: %LocalAppData%\Vivaldi\Application\[Version]\resources\vivaldi\
+ *  (Should probably work in Stylish too)
+ *
+ *  TIP: Open settings (CTRL-F2), then press F12, you now have a DOM Inspector
+ *  window for the browser which you can use to inspect Vivaldi UI classes
+ *
+ *  Not everything might work on your setup but I added comments to help you.
+ *  Rebound toggle URL bar to F1 in settings. Toggle bookmark bar CTRL-SHIFT-B
+ ****/
+
+/*  TAB BAR
+ *************/
+
+/* DISABLING UNWANTED UI ELEMENTS */
+.window-buttongroup { /* No close/minimize/maximize buttons, */
+  display: none !important;  /* I use system keybinds instead. */
+}
+.vivaldi { /* No menu button; you can toggle the menu with ALT or F10, */
+  display: none !important; /* then navigate it with arrow keys. */
+}
+div.button-toolbar.newtab { /* No new tab button. Use Quick Command/CTRL-T, */
+  display: none !important; /* or a vim binds plugin (I use vb4c.) */
+}
+#tabs-container .close {
+  display: none !important; /* No close tab button */
+}
+.toolbar-tabbar > .button-toolbar.toggle-trash, /* No trash button */
+.toolbar-tabbar > .toolbar-group > .button-toolbar.toggle-trash {
+  display: none !important;
+}
+#header { /* Ensures I have no top bars at all in full screen or CTRL-F11 */
+  min-height: 0px !important;
+}
+
+/* TAB CONTAINER */
+#tabs-container.top { /* (when tab position is Top in settings) */
+  padding-left: 2px !important;
+  height: 17px !important;
+  padding-right: 0 !important; /* Tab bar uses entire window width */
+  width: calc(100vw - 20px) !important; /* Also needed for entire width */
+  padding-top: 0px !important; /* remove Vivaldi useless tab top-padding */
+  border: 0 !important; /* No border below tab bar */
+  padding-bottom: 9px !important;
+}
+
+/* ACTIVE TAB */
+.tab.active {
+  background-color: #F9DA84 !important;
+  /*text-shadow: 1px 1px 1px black !important;*/
+}
+.tab-position { /* If active tab has a min-width set in Vivaldi settings, */
+  transition: .5s !important; /* make it expand smoothly. */
+}
+
+/* INDIVIDUAL TAB STYLING */
+.tab-header { /* [Favicon+Title] within the tab */
+  padding-top: 1px !important; /* Positioning shenanigans */
+  padding-bottom: 0 !important;
+  flex: 0 0 19px !important;
+  font-size: 14px !important;
+  font-family: azukifontB !important;
+}
+.tab .favicon { /* Favicon positioning */
+  padding: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  min-width: 14px !important;
+  min-height: 14px !important;
+  flex: 0 0 14px !important;
+  filter: none !important; /* Disables active tag favicon stroke */
+}
+.tab .favicon img {
+  border-radius: 2px !important;
+  height: 12px !important;
+  width: 12px !important;
+  margin-bottom: -2px !important;
+}
+.tab .title { /* [Page title] text positioning */
+  margin-right: 3px !important;
+  margin-top: -2px !important;
+  -webkit-mask-image: -webkit-linear-gradient( /* Reduce default shadow */
+  180deg, transparent 0, #fff 0px) !important;
+}
+.tabs-top .tab-position .tab, .tabs-bottom .tab-position .tab {
+  margin-right: 0px !important;
+}
+.tab .button-badge {
+  top: 0 !important;
+  left: 0px !important;
+  width: calc(100% - 2px) !important;
+  font-size: 0 !important;
+  background-color: var(--colorAccentBg) !important;
+  z-index: -1;
+  height: 18px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  max-width: 100% !important;
+}
+
+/*  URL BAR    (not ready for use)
+ ************/
+ .toolbar-mainbar {
+  background: var(--colorBg) !important;
+}
+.address-top .toolbar-mainbar:after {
+  content: '';
+  display:none;
+}
+/*.toolbar-mainbar > .button-toolbar > button,*/
+/*.toolbar-mainbar > .toolbar-group > .button-toolbar > button {*/
+  /*height: 16px !important;*/
+  /*min-width: 30px !important;*/
+/*}*/
+/*.toolbar-extensions.toolbar-extensions.toolbar-extensions .button-toolbar >*/
+/*button > img {*/
+  /*width: 12px !important;*/
+  /*height: 12px !important;*/
+  /*flex-basis: 12px !important;*/
+/*}*/
+/*.toolbar-mainbar > .button-toolbar > button svg:first-child,*/
+/*.toolbar-mainbar > .toolbar-group > .button-toolbar > button svg:first-child,*/
+/*.toolbar-mainbar > .button-toolbar > button img:first-child,*/
+/*.toolbar-mainbar > .toolbar-group > .button-toolbar > button img:first-child {*/
+  /*flex: 0 0 14px !important;*/
+  /*height: 14px !important;*/
+/*}*/
+/*.toolbar-mainbar > .button-toolbar > button svg,*/
+/*.toolbar-mainbar > .toolbar-group > .button-toolbar > button svg,*/
+/*.toolbar-mainbar > .button-toolbar > button img,*/
+/*.toolbar-mainbar > .toolbar-group > .button-toolbar > button img {*/
+  /*width: 14px !important;*/
+/*}*/
+/*.addressfield, .searchfield {*/
+  /*height: 14px !important;*/
+  /*margin-top: -2px !important;*/
+  /*margin-bottom: 0 !important;*/
+  /*padding: 0 !important;*/
+/*}*/
+/*.SiteInfoButton {*/
+  /*height: initial !important;*/
+/*}*/
+/*.SiteInfoButton-SecurityBadge > svg {*/
+  /*height: 12px !important;*/
+  /*width: 12px !important;*/
+/*}*/
+/*.toolbar-addressbar .UrlField {*/
+  /*height: 13px !important;*/
+  /*font-size: 11px !important;*/
+  /*opacity: .6 !important;*/
+/*}*/
+/*.toolbar-insideinput.toolbar-insideinput.toolbar-insideinput > .button-toolbar button, .toolbar-insideinput.toolbar-insideinput.toolbar-insideinput > .toolbar-group > .button-toolbar button {*/
+  /*height: 12px !important;*/
+  /*width: 12px !important;*/
+/*}*/
+
+/*  BOOKMARK BAR
+ *****************/
+.bookmark-bar {
+  height: 16px !important;
+  opacity: .6 !important;
+  overflow: hidden !important;
+
+}
+.color-behind-tabs-off .bookmark-bar button {
+  /*text-shadow: 1px 1px 0px #000 !important;*/
+}
+.bookmark-bar button {
+  margin-top: -6px !important;
+}
+.bookmark-bar button img, .bookmark-bar button svg.folder-icon {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+/*   MISC
+ *************/
+
+ /* Small gradient below top bars */
+#webpage-stack {
+  /*-webkit-mask-image: -webkit-linear-gradient(*/
+  270deg, transparent 0, #fff 5px) !important;
+}
+
+/* Reduce font size for Quick Command (F2) Window.
+I have it bound to CTRL-T in case vb4c breaks. */
+.quick-command-container .quick-command-search, .quick-command-container .quick-command-search-hint {
+  font-size: 1em !important;
+}
+#modal-bg.qc-modal { /* Quick Command position */
+  top: 65px !important;
+}
+#browser, #browser ~ div {
+
+    padding: 9px !important;
+    background: #FFFCFD !important;
+}.tab-strip {
+    background-color: var(--colorBg) !important;
+}
+#browser:not(.address-top) > #header {
+     box-shadow: inset 0 0px 0 var(--colorBorder) !important; 
+}
+#main {
+  border-radius: 6px !important;
+}
+.isblurred .tab-position .tab .title {
+    opacity: 1;
+}
