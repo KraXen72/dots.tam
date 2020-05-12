@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
-# tam edited this to allow non exact class match
+# SOURCE : https://github.com/mkropat/jumpapp/blob/master/jumpapp
+# Added: - non-exact class matching
+#        - apply tamwm layout on workspace switch
+#        - multi-workspace matching will prioritize current workspace
+#          TODO: fix get_matching_window_from_list() so that it still switches
+#          workspace if there are several instances on the current one
+#                don't apply layout if already on workspace?
+
 
 show_usage() {
     local cmd=$(basename "${BASH_SOURCE[0]}")
@@ -27,10 +34,10 @@ Options:
 }
 
 main() {
-    local classid cmdid force fork=1 list passthrough focusOrMinimize in_reverse matching_title workspace_filter mouse_center
+    local classid cmdid force fork=1 list passthrough focusOrMinimize in_reverse matching_title workspace_filter mouse_center non_class
 
     local OPTIND
-    while getopts c:fhi:Lmnprt:wRC opt; do
+    while getopts c:fhi:Lmnprt:wRCx opt; do
         case "$opt" in
             c) classid="$OPTARG" ;;
             f) force=1 ;;
@@ -45,6 +52,7 @@ main() {
             w) workspace_filter="$(get_active_workspace)"; force=1 ;;
             R) keep_workspace=1 ;;
             C) mouse_center=1 ;;
+            x) non_class=1 ;;
         esac
     done
     shift $(( OPTIND - 1 ))
@@ -149,18 +157,26 @@ where_class_or_pid_matches() {
 
     local windowid hostname pid workspace class title
     while read -r windowid hostname pid workspace class title; do
-        if tam_contains "$class" "$target_class"; then
+        if [[ -z $non_class ]]; then
+          if contains_or_matches_regex "$class" "$target_class"; then
+              printf '%s\n' "$windowid $hostname $pid $workspace $class $title"
+              continue
+          fi
+        fi
+        if [[ -n $non_class ]]; then
+          if does_not_contain "$class" "$target_class"; then
             printf '%s\n' "$windowid $hostname $pid $workspace $class $title"
             continue
+          fi
         fi
-        if equals_case_insensitive "$hostname" "$local_hostname"; then
-            for target_pid in "$@"; do
-                if (( pid == target_pid )); then
-                    printf '%s\n' "$windowid $hostname $pid $workspace $class $title"
-                    continue 2
-                fi
-            done
-        fi
+#        if equals_case_insensitive "$hostname" "$local_hostname"; then
+            #for target_pid in "$@"; do
+                #if (( pid == target_pid )); then
+                    #printf '%s\n' "$windowid $hostname $pid $workspace $class $title"
+                    #continue 2
+                #fi
+            #done
+        #fi
     done
 }
 
@@ -244,13 +260,18 @@ get_most_recently_focused_window() {
 get_matching_window_from_list() {
     local window_to_search_for=$1
     local window_list=${@:2}
+    local current_workspace=$(wmctrl -d|grep "*"|awk '{print $1}')
 
     for window in ${window_list[@]}; do
-        if [[ $window_to_search_for -eq $window ]]; then
-            printf '%s\n' $window
-            return
+      if [[ $window_to_search_for -eq $window ]]; then
+        local window_workspace=$(wmctrl -lx | grep $window | awk '{print $2}')
+        if [[ $window_workspace -eq $current_workspace ]]; then
+          printf '%s\n' $window
+          return
         fi
+      fi
     done
+
 }
 
 reverse_words() {
@@ -329,8 +350,12 @@ equals_case_insensitive() {
     [[ "${1^^}" == "${2^^}" ]]
 }
 
-tam_contains() {
+contains_or_matches_regex() {
     [[ "${1^^}" =~ "${2^^}" ]]
+}
+
+does_not_contain() {
+    [[ ! "$1" =~ "$2" ]]
 }
 
 ##### External Interfaces #####
@@ -403,7 +428,14 @@ get_active_workspace() {
     done < <(wmctrl -d)
 }
 
+# added for synergy with tamwm
+switch_to_target_workspace_with_tamwm() {
+  local destination_workspace=$(wmctrl -lx | grep "$1" | awk '{print $2}')
+  tamwm -d dnum "$destination_workspace" &> /dev/null
+}
+
 change_workspace_activate_window() {
+    switch_to_target_workspace_with_tamwm "$1"
     wmctrl -i -a "$1"
 }
 

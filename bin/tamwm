@@ -215,7 +215,7 @@ send_to_dtop() {
       xdotool set_desktop_for_window $instance $target_layout
     done
   done
-  echo "moving vivaldi now"
+  echo "moving $app now"
   [[ -n "$pos" ]]  && $xdo_on_cls "$1" windowmove $pos &
   [[ -n "$size" ]] && $xdo_on_cls "$1" windowsize $size &
 }
