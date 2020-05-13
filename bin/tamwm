@@ -211,11 +211,9 @@ send_to_dtop() {
   for app in "$@"; do
     local all_open_instances=$(xdotool search --class $app)
     for instance in $all_open_instances; do
-      echo "looping thru"
       xdotool set_desktop_for_window $instance $target_layout
     done
   done
-  echo "moving $app now"
   [[ -n "$pos" ]]  && $xdo_on_cls "$1" windowmove $pos &
   [[ -n "$size" ]] && $xdo_on_cls "$1" windowsize $size &
 }

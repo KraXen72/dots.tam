@@ -15,7 +15,6 @@ dunst &
 setxkbmap -option shift:both_capslock &
 xcape -e 'Shift_R=Return' &
 /home/sensei/bash_scripts/layout.sh &
-xset s off -dpms
-xset s noblank
+xset dpms 0 0 0
 sleep 1
 tamwm -l 3terms
