@@ -34,11 +34,18 @@ sleep .2 # Consider increasing this if the script glitches on opening
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-# SCRIPT
-#########
+main() {
+  kill_previous_instance
+  {
+    make_cover_window
+    sleep .2
+    close_cover_windows_down_to 1
+    adjust_window
+  } &> /dev/null &
+}
 
 kill_previous_instance() {
-  script_name=${BASH_SOURCE[0]}
+  local script_name=${BASH_SOURCE[0]}
   for pid in $(pidof -x $script_name); do
     if [ $pid != $$ ]; then
         kill -9 $pid
@@ -46,8 +53,43 @@ kill_previous_instance() {
   done
 }
 
-setup_geometry() {
-  ncmpcpp_geometry=$(xdotool search --class "ncmpcpp" getwindowgeometry | \
+make_cover_window() {
+  get_ncm_geometry
+  setup_files
+  clean_up_tmp
+  scale_cover
+  round_cover_corners
+  yad --no-buttons --skip-taskbar --no-focus --posx=$left --posy=$top --image \
+    "/tmp/mpdcover-0.png" --image-on-top --title=mpdcover &
+}
+
+close_cover_windows_down_to() {
+  while [[ "$(wmctrl -l | grep mpdcover | wc -l)" -gt $1 ]]
+  do xdotool search --name mpdcover windowkill; done
+}
+
+adjust_window() {
+  while sleep 2; do
+    get_ncm_geometry
+    get_current_cover_geometry
+
+    if has_ncm_been_moved; then
+      xdotool search --name mpdcover windowmove $left $top
+    fi
+
+    if has_ncm_been_resized; then
+      close_cover_windows_down_to 0
+      make_cover_window
+    fi
+    
+    if has_ncm_been_quit; then
+      close_cover_windows_down_to 0 && exit
+    fi
+  done
+}
+
+get_ncm_geometry() {
+  ncmpcpp_geometry=$(xdotool search --name ncmpcpp getwindowgeometry | \
     tr '\n' ' ' | sed -e 's/[^0-9]/ /g' -e 's/^ *//g' -e 's/ *$//g' | tr -s ' ')
   ncmpcpp_left="$(cut -d' ' -f2 <<< "$ncmpcpp_geometry")"
   ncmpcpp_top="$(cut -d' ' -f3 <<< "$ncmpcpp_geometry")"
@@ -70,49 +112,20 @@ setup_files() {
   [[ -z "$src" ]] && src=$fallback
 }
 
-produce_window() {
-  setup_geometry
-  setup_files
-  # Clean up previous cover files
+clean_up_tmp() {
   rm -f /tmp/mpdcover*
+}
 
-  # Scale the image
+scale_cover() {
   foo=$(($side+1))
   convert "$src" -scale "$foo"x"$foo"^ -crop "$side"x"$side" "/tmp/mpdcover.png"
+}
 
-  # Apply corner rounding
+round_cover_corners() {
+  [[ $rounding -gt 0 ]] &&
   convert -size "$side"x"$side" xc:none -draw "roundrectangle 0,0,\
     $side,$side,$rounding,$rounding" png:- | convert /tmp/mpdcover-0.png \
     -matte - -compose DstIn -composite /tmp/mpdcover-0.png
-
-  # Open Yad window
-  yad --no-buttons --skip-taskbar --no-focus --posx=$left --posy=$top --image \
-    "/tmp/mpdcover-0.png" --image-on-top --title=mpdcover &
-
-  sleep .2
-}
-
-clean_up_windows() {
-  while [[ "$(wmctrl -l | grep mpdcover | wc -l)" -gt $1 ]]
-  do xdotool search --name mpdcover windowkill; done
-}
-
-adjust_window() {
-  while true; do
-    setup_geometry
-    get_current_cover_geometry
-    if [[ $top != $cover_top || $left != $cover_left ]]
-    then
-      xdotool search --name mpdcover windowmove $left $top
-    fi
-    if [[ $side != $cover_side ]]
-    then
-      clean_up_windows 0
-      produce_window
-    fi
-    [[  $(wmctrl -lx) != *ncmpcpp* ]] && clean_up_windows 0
-    sleep 5;
-  done
 }
 
 get_current_cover_geometry() {
@@ -121,11 +134,18 @@ get_current_cover_geometry() {
     cover_left="$(cut -d' ' -f2 <<< "$cover_geometry")"
     cover_top="$(cut -d' ' -f3 <<< "$cover_geometry")"
     cover_side=$(($(cut -d' ' -f5 <<< "$cover_geometry")-8))
-  }
+}
 
-kill_previous_instance
-{
-  produce_window
-  clean_up_windows 1
-  adjust_window
-} &> /dev/null &
+has_ncm_been_moved() {
+  [[ $top != $cover_top || $left != $cover_left ]]
+}
+
+has_ncm_been_resized() {
+  [[ $side != $cover_side ]]
+}
+
+has_ncm_been_quit() {
+  [[ $(wmctrl -lx | awk '{print $5}') != *ncmpcpp* ]]
+}
+
+[[ "${BASH_SOURCE[0]}" == "$0" ]] && main "$@"

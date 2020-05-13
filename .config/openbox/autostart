@@ -18,3 +18,5 @@ xcape -e 'Shift_R=Return' &
 xset dpms 0 0 0
 sleep 1
 tamwm -l 3terms
+tamwm -l vim
+tamwm -l vivaldi

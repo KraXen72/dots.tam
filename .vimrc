@@ -31,7 +31,8 @@ Plug 'preservim/nerdcommenter' " comment/uncomment binds
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " TODO: learn to use fzf
 Plug 'junegunn/fzf.vim' " TODO: learn to use
 Plug 'zhou13/vim-easyescape' " jk kj = escape, no visual distraction
-Plug 'michaeljsmith/vim-indent-object'
+Plug 'michaeljsmith/vim-indent-object' " text object based on indentation
+Plug 'JamshedVesuna/vim-markdown-prev' " markdown preview
 
 call plug#end()
 
