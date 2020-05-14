@@ -122,18 +122,19 @@ scale_cover() {
 }
 
 round_cover_corners() {
-  [[ $rounding -gt 0 ]] &&
-  convert -size "$side"x"$side" xc:none -draw "roundrectangle 0,0,\
-    $side,$side,$rounding,$rounding" png:- | convert /tmp/mpdcover-0.png \
-    -matte - -compose DstIn -composite /tmp/mpdcover-0.png
+  if [[ $rounding -gt 0 ]]; then
+    convert -size "$side"x"$side" xc:none -draw "roundrectangle 0,0,\
+      $side,$side,$rounding,$rounding" png:- | convert /tmp/mpdcover-0.png \
+      -matte - -compose DstIn -composite /tmp/mpdcover-0.png
+  fi
 }
 
 get_current_cover_geometry() {
-    cover_geometry=$(xdotool search --name "mpdcover" getwindowgeometry|tr\
-      '\n' ' ' | sed -e 's/[^0-9]/ /g' -e 's/^ *//g' -e 's/ *$//g' | tr -s ' ')
-    cover_left="$(cut -d' ' -f2 <<< "$cover_geometry")"
-    cover_top="$(cut -d' ' -f3 <<< "$cover_geometry")"
-    cover_side=$(($(cut -d' ' -f5 <<< "$cover_geometry")-8))
+  cover_geometry=$(xdotool search --name "mpdcover" getwindowgeometry|tr\
+    '\n' ' ' | sed -e 's/[^0-9]/ /g' -e 's/^ *//g' -e 's/ *$//g' | tr -s ' ')
+  cover_left="$(cut -d' ' -f2 <<< "$cover_geometry")"
+  cover_top="$(cut -d' ' -f3 <<< "$cover_geometry")"
+  cover_side=$(($(cut -d' ' -f5 <<< "$cover_geometry")-8))
 }
 
 has_ncm_been_moved() {
