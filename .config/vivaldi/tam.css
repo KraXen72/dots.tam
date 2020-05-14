@@ -2,8 +2,7 @@
  *  #########################################################################
  *  You can see it on this workflow webm: https://u.teknik.io/xLmC5.webm
  *
- *  LINUX: /opt/vivaldi/resources/vivaldi/style/custom.css
- *  WINDOWS: %LocalAppData%\Vivaldi\Application\[Version]\resources\vivaldi\
+ *  Settings > Custom UI Modifications > Specify a directory
  *  (Should probably work in Stylish too)
  *
  *  TIP: Open settings (CTRL-F2), then press F12, you now have a DOM Inspector
@@ -182,8 +181,8 @@ div.button-toolbar.newtab { /* No new tab button. Use Quick Command/CTRL-T, */
 
  /* Small gradient below top bars */
 #webpage-stack {
-  /*-webkit-mask-image: -webkit-linear-gradient(*/
-  270deg, transparent 0, #fff 5px) !important;
+  /*-webkit-mask-image: -webkit-linear-gradient(
+  270deg, transparent 0, #fff 5px) !important;*/
 }
 
 /* Reduce font size for Quick Command (F2) Window.
@@ -191,22 +190,28 @@ I have it bound to CTRL-T in case vb4c breaks. */
 .quick-command-container .quick-command-search, .quick-command-container .quick-command-search-hint {
   font-size: 1em !important;
 }
+
 #modal-bg.qc-modal { /* Quick Command position */
   top: 65px !important;
 }
-#browser, #browser ~ div {
 
+#browser, #browser ~ div {
     padding: 9px !important;
     background: #FFFCFD !important;
-}.tab-strip {
+}
+
+.tab-strip {
     background-color: var(--colorBg) !important;
 }
+
 #browser:not(.address-top) > #header {
      box-shadow: inset 0 0px 0 var(--colorBorder) !important; 
 }
+
 #main {
   border-radius: 6px !important;
 }
+
 .isblurred .tab-position .tab .title {
     opacity: 1;
 }
