@@ -64,7 +64,7 @@ make_cover_window() {
 }
 
 close_cover_windows_down_to() {
-  while [[ "$(wmctrl -l | grep mpdcover | wc -l)" -gt $1 ]]
+  while [[ $(wmctrl -l | grep mpdcover | wc -l) -gt $1 ]]
   do xdotool search --name mpdcover windowkill; done
 }
 
@@ -73,6 +73,11 @@ adjust_window() {
     get_ncm_geometry
     get_current_cover_geometry
 
+    if has_ncm_been_quit; then
+      close_cover_windows_down_to 0
+      exit
+    fi
+
     if has_ncm_been_moved; then
       xdotool search --name mpdcover windowmove $left $top
     fi
@@ -80,10 +85,6 @@ adjust_window() {
     if has_ncm_been_resized; then
       close_cover_windows_down_to 0
       make_cover_window
-    fi
-    
-    if has_ncm_been_quit; then
-      close_cover_windows_down_to 0 && exit
     fi
   done
 }
@@ -146,7 +147,7 @@ has_ncm_been_resized() {
 }
 
 has_ncm_been_quit() {
-  [[ $(wmctrl -lx | awk '{print $5}') != *ncmpcpp* ]]
+  [[ ! $(wmctrl -lx | awk '{print $5}') =~ ncmpcpp ]]
 }
 
 [[ "${BASH_SOURCE[0]}" == "$0" ]] && main "$@"
