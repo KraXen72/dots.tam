@@ -35,7 +35,7 @@ sleep .2 # Consider increasing this if the script glitches on opening
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 main() {
-  kill_previous_instance
+  kill_previous_instance &> /dev/null
   {
     make_cover_window
     sleep .2
@@ -54,7 +54,7 @@ kill_previous_instance() {
 }
 
 make_cover_window() {
-  get_ncm_geometry
+  get_ncmpcpp_geometry
   setup_files
   clean_up_tmp
   scale_cover
@@ -69,27 +69,27 @@ close_cover_windows_down_to() {
 }
 
 adjust_window() {
-  while sleep 2; do
-    get_ncm_geometry
+  while sleep 1; do
+    get_ncmpcpp_geometry
     get_current_cover_geometry
 
-    if has_ncm_been_quit; then
+    if has_ncmpcpp_been_quit; then
       close_cover_windows_down_to 0
       exit
     fi
 
-    if has_ncm_been_moved; then
+    if has_ncmpcpp_been_moved; then
       xdotool search --name mpdcover windowmove $left $top
     fi
 
-    if has_ncm_been_resized; then
+    if has_ncmpcpp_been_resized; then
       close_cover_windows_down_to 0
       make_cover_window
     fi
   done
 }
 
-get_ncm_geometry() {
+get_ncmpcpp_geometry() {
   ncmpcpp_geometry=$(xdotool search --name ncmpcpp getwindowgeometry | \
     tr '\n' ' ' | sed -e 's/[^0-9]/ /g' -e 's/^ *//g' -e 's/ *$//g' | tr -s ' ')
   ncmpcpp_left="$(cut -d' ' -f2 <<< "$ncmpcpp_geometry")"
@@ -138,15 +138,15 @@ get_current_cover_geometry() {
   cover_side=$(($(cut -d' ' -f5 <<< "$cover_geometry")-8))
 }
 
-has_ncm_been_moved() {
+has_ncmpcpp_been_moved() {
   [[ $top != $cover_top || $left != $cover_left ]]
 }
 
-has_ncm_been_resized() {
+has_ncmpcpp_been_resized() {
   [[ $side != $cover_side ]]
 }
 
-has_ncm_been_quit() {
+has_ncmpcpp_been_quit() {
   [[ ! $(wmctrl -lx | awk '{print $5}') =~ ncmpcpp ]]
 }
 
