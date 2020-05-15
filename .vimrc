@@ -94,6 +94,7 @@ nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
 nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
 " Refresh when plugins fuck up.
 noremap <F12> <Esc>:syn off <bar> syn on <bar> highlight clear SignColumn <bar> bp <bar> bn<CR>
+vnoremap c <esc>v
 
 " PLUGIN MAPPINGS
 " ###############

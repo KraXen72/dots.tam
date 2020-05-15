@@ -7,7 +7,8 @@
 #  - Workaround for closing ARGB windows with no flicker using Picom fade-out.
 #  - Apply preset layouts on workspace (desktop) change
 
-usage() {
+usage()
+{
   local cmd=$(basename "${BASH_SOURCE[0]}")
   echo "Usage: $cmd [OPTION] [ARG]
 -l       Launch_app and position a program (irc ncmpcpp ranger vim vivaldi
@@ -16,7 +17,9 @@ usage() {
 -d       Desktop manager (dprev dnext)"
 }
 
-main() {
+
+main()
+{
   local instr
   instr="usage"
   while getopts l:xd: opt; do
@@ -36,7 +39,8 @@ main() {
 # ===== Main functions ========================================================
 # =============================================================================
 
-launch_app() {
+launch_app()
+{
   local cls new_cls pos size existing_instances
   local tml="gnome-terminal --window-with-profile noel --geometry"
   local xdo_on_cls="xdotool search --onlyvisible --sync --class"
@@ -99,11 +103,12 @@ launch_app() {
   cmd &> /dev/null
   until [[ $(count_cls $cls) -gt $existing_instances ]]; do sleep .1; done
 
-  [[ -n "$new_cls" ]] && {
+  if [[ -n "$new_cls" ]]
+  then
     $xdo_on_cls $cls set_window --name $new_cls
     $xdo_on_cls $cls set_window --class $new_cls
     cls=$new_cls
-  }
+  fi
 
   $xdo_on_cls $cls windowfocus --sync
   [[ -n "$pos" ]]  && $xdo_on_cls $cls windowmove $pos
@@ -112,7 +117,9 @@ launch_app() {
   after_cmds
 }
 
-close_window_workaround(){
+
+close_window_workaround()
+{
   # If no argument passed, operate on active window
   local active target
   active=$(xprop -root _NET_ACTIVE_WINDOW|cut -d ' ' -f 5|sed -e 's/../0&/2')
@@ -122,8 +129,10 @@ close_window_workaround(){
   wmctrl -ic $target
 }
 
+
 # ==== Desktop Management
-manage_dtops(){
+manage_dtops()
+{
   local instr xdo_on_cls="xdotool search --onlyvisible --class"
 
   case "$1" in
@@ -136,19 +145,25 @@ manage_dtops(){
   $instr $*
 }
 
-dnext() {
+
+dnext()
+{
   local destination=$(($(active_dtop)+1))
   [[ $(active_dtop) == $(last_dtop) ]] && destination=0
   switch_to_dtop $destination
 }
 
-dprev() {
+
+dprev()
+{
   local destination=$(($(active_dtop)-1))
   [[ $(active_dtop) == 0 ]] && destination=$(last_dtop)
   switch_to_dtop $destination
 }
 
-dnum(){
+
+dnum()
+{
   switch_to_dtop $1
 }
 
@@ -158,19 +173,24 @@ dnum(){
 # =============================================================================
 
 # ==== Main block helpers
-check_prereqs() {
+check_prereqs()
+{
   has_command() { hash "$1" 2>/dev/null; }
   die() { printf '%s\n' "$1" >&2; exit 1; }
   has_command wmctrl || die 'Error: Aborted. Please install wmctrl.'
   has_command xdotool || die 'Error: Aborted. Please install xdotool.'
 }
 
+
 # ==== Launch app helpers
-count_cls() {
+count_cls()
+{
   wmctrl -lx | cut -d' ' -f4 | grep -c "$1"
 }
- 
-openbox_actions() {
+
+
+openbox_actions()
+{
   case $1 in
     to_bottom) xdotool key ctrl+alt+shift+super+1 ;;
     to_middle) xdotool key ctrl+alt+shift+super+2 ;;
@@ -179,26 +199,29 @@ openbox_actions() {
 }
 
 # ==== Desktop management helpers
-active_dtop() {
+active_dtop()
+{
   echo $(wmctrl -d | grep "*" | cut -d' ' -f1); 
 }
 
-  last_dtop() {
-    echo $(wmctrl -d | tail -1 | cut -d' ' -f1)
-  }
+last_dtop()
+{
+  echo $(wmctrl -d | tail -1 | cut -d' ' -f1)
+}
 
-switch_to_dtop(){
-  echo "now applying layout"
+switch_to_dtop()
+{
   apply_layout $1
-  echo "now switching dtop"
   wmctrl -s $1
 }
 
-send_to_dtop() {
+send_to_dtop()
+{
   # eg: target_layout=2 && send_to_dtop irc ranger ncmpcpp
   #     send_to_dtop -p "703 63" -s "1208 978" vivaldi
   local OPTIND pos="" size=""
-  while getopts p:s: opt; do
+  while getopts p:s: opt
+  do
     case "$opt" in
       p) pos="$OPTARG" ;;
       s) size="$OPTARG" ;;
@@ -208,9 +231,12 @@ send_to_dtop() {
 
   [[ -z $target_layout ]] && local target_layout=$(active_dtop)
 
-  for app in "$@"; do
+  for app in "$@"
+  do
     local all_open_instances=$(xdotool search --class $app)
-    for instance in $all_open_instances; do
+
+    for instance in $all_open_instances
+    do
       xdotool set_desktop_for_window $instance $target_layout
     done
   done
@@ -218,7 +244,8 @@ send_to_dtop() {
   [[ -n "$size" ]] && $xdo_on_cls "$1" windowsize $size &
 }
 
-apply_layout() {
+apply_layout()
+{
   local target_layout=$(active_dtop)
   [[ -n $1 ]] && target_layout=$1
 
@@ -234,7 +261,7 @@ apply_layout() {
       2)
         send_to_dtop irc ncmpcpp Yad ranger vim_two &
         ;;
-    esac
+  esac
 }
 
 

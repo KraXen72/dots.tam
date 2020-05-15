@@ -15,8 +15,9 @@ dunst &
 setxkbmap -option shift:both_capslock &
 xcape -e 'Shift_R=Return' &
 /home/sensei/bash_scripts/layout.sh &
-xset dpms 0 0 0
-sleep 1
-tamwm -l 3terms
-tamwm -l vim
+xset dpms 0 0 0 &
+xset s off &
+sleep 1 &&
+tamwm -l 3terms &&
+tamwm -l vim &&
 tamwm -l vivaldi
