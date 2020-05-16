@@ -183,10 +183,10 @@ set foldlevel=1
 set mouse=a " Mouse support in all modes
 set textwidth=80 " used by autoformatter
 set formatoptions=qn1
-set tabstop=2 " length of real tabs
-set shiftwidth=2 " autoindent step size
+set tabstop=4 " length of real tabs
+set shiftwidth=4 " autoindent step size
 set expandtab " when pressing tabs insert spaces instead
-set softtabstop=2 " number of spaces that is inserted when pressing tab
+set softtabstop=4 " number of spaces that is inserted when pressing tab
 set shiftround " autoindent must be rounded to shiftwidth
 set pastetoggle=<F2>
 set wildcharm=<C-z>

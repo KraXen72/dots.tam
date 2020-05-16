@@ -9,15 +9,16 @@ elif which gnome-settings-daemon >/dev/null; then
   gnome-settings-daemon &
 fi
 picom -c --corner-radius 5 &
-sxhkd &
 polybar tam &
 dunst &
+setxkbmap us -model pc105angle -variant cmk_ed_dh; xmodmap -e 'keycode 56 = backslash bar'; xmodmap -e 'keycode 54 = d D'; xmodmap -e 'keycode 56 = backslash bar'; xmodmap -e 'keycode 55 = v V'; xmodmap -e 'keycode 56 = backslash bar'; xmodmap -e 'keycode 55 = v V'; xmodmap -e 'keycode 43 = m'; xmodmap -e 'keycode 57 = k'
 setxkbmap -option shift:both_capslock &
 xcape -e 'Shift_R=Return' &
 /home/sensei/bash_scripts/layout.sh &
 xset dpms 0 0 0 &
 xset s off &
+sxhkd &
 sleep 1 &&
-tamwm -l 3terms &&
-tamwm -l vim &&
+tamwm -l vim
 tamwm -l vivaldi
+tamwm -l 3terms
