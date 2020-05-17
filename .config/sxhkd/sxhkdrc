@@ -1,34 +1,40 @@
 # Iconize (minimize) window // Close window w/ Picom flicker workaround
 super + {g,x}
-  {xdotool getactivewindow windowminimize,tamwm -x}
+    {xdotool getactivewindow windowminimize,tamwm -x}
 
 # Launcher
 super + r
-  gmrun
+    gmrun
 
 # Screenshots
 super + s
-  scrot && dunstify -r 1 "Screenshot taken."
+    scrot && dunstify -r 1 "Screenshot taken."
 
 super + shift + @s
-  scrot -s && dunstify -r 1 "Screenshot taken."
+    scrot -s && dunstify -r 1 "Screenshot taken."
 
 # run or raise
 super + {w,b,t,f,c}
-  app={irc,ncmpcpp,ranger,vivaldi,vim} && jumpapp -f -c "$app" tamwm -l $app
+    app={irc,ncmpcpp,ranger,vivaldi,vim} && jumpapp -f -c "$app" tamwm -l $app
 
 super + q
-  ~/bash_scripts/focus_extra.sh
+    ~/bash_scripts/focus_extra.sh
 
 # More run or raise
 super + shift + {w}
-  {jumpapp -f -c "spare" tamwm -l spare}
+    {jumpapp -f -c "spare" tamwm -l spare}
 
 super + {h,l}
-  tamwm -d {dprev,dnext}
+    tamwm -d {dprev,dnext}
 
-super + {1-9}
-  tamwm -d dnum {0-8}
+super + {1-4}
+    tamwm -d dnum {0-3}
+
+super + shift + {1,2}
+    tamwm -s {main,secondary}
+
+ctrl + super +  {1-4}
+    xdotool getactivewindow set_desktop_for_window {0-3}
 
 super + Return
-  /home/sensei/bash_scripts/init.sh
+    /home/sensei/bash_scripts/init.sh

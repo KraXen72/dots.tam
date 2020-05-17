@@ -430,8 +430,11 @@ get_active_workspace() {
 
 # added for synergy with tamwm
 switch_to_target_workspace_with_tamwm() {
+  local active_workspace=$(wmctrl -d | grep "*" | cut -d' ' -f1)
   local destination_workspace=$(wmctrl -lx | grep "$1" | awk '{print $2}')
-  tamwm -d dnum "$destination_workspace" &> /dev/null
+  if [[ $active_workspace != $destination_workspace ]]; then
+    tamwm -d dnum "$destination_workspace" &> /dev/null
+  fi
 }
 
 change_workspace_activate_window() {

@@ -59,8 +59,17 @@ make_cover_window() {
   clean_up_tmp
   scale_cover
   round_cover_corners
+
+  # Everything below except Yad command is for tamwm integration, remove freely
+  existing_instances=$(count_cls Yad)
+
   yad --no-buttons --skip-taskbar --no-focus --posx=$left --posy=$top --image \
     "/tmp/mpdcover-0.png" --image-on-top --title=mpdcover &
+
+  until [[ $(count_cls Yad) -gt $existing_instances ]]; do sleep .1; done
+  window_id=$(wmctrl -lx | grep "$cls" | awk '{print $1}' | tail -1)
+  mkdir -p /tmp/tamwm/
+  echo $window_id > /tmp/tamwm/WID_Yad
 }
 
 close_cover_windows_down_to() {
@@ -148,6 +157,10 @@ has_ncmpcpp_been_resized() {
 
 has_ncmpcpp_been_quit() {
   [[ ! $(wmctrl -lx | awk '{print $5}') =~ ncmpcpp ]]
+}
+
+count_cls() {
+    wmctrl -lx | cut -d' ' -f4 | grep -c "$1"
 }
 
 [[ "${BASH_SOURCE[0]}" == "$0" ]] && main "$@"

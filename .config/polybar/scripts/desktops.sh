@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Quick and dirty workspace script using tamwm's layout switcher
 
 active_dtop=$(wmctrl -d|grep "*"|awk '{print $10}')
@@ -14,15 +14,15 @@ dtops=$(wmctrl -d|awk -vORS="" -vOFS="" -v active_dtop="$active_dtop" -v active_
   {
      if ($10==active_dtop) {
        item=active_left $10 active_right
-    }else {
+    } else {
        item=inactive_left $10 inactive_right
     }
+    $1 = $1 + 1
     if (i == "") {
-      print "%{A1:tamwm -d dnum "$1":}"item"%{A}"
+      print "%{A1:xdotool key super+"$1":}"item"%{A}"
       i = 1
-    }
-    else {
-      print " %{A1:tamwm -d dnum "$1":}"item"%{A}"
+    } else {
+      print " %{A1:xdotool key super+"$1":}"item"%{A}"
     }
   }')
 
