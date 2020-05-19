@@ -6,6 +6,7 @@
 #    - Launch_app applications with preset geometry
 #    - Workaround for closing ARGB windows with no flicker using Picom fade-out.
 #    - Apply preset layouts on workspace (desktop) change
+
 usage() {
     local cmd=$(basename "${BASH_SOURCE[0]}")
     echo "Usage: $cmd [OPTION] [ARG]
@@ -15,7 +16,6 @@ usage() {
 -d         Desktop manager (args: dprev, dnext, dnum n)
 -s         Positions window (args: main, secondary)"
 }
-
 
 main() {
     local instr
@@ -32,7 +32,6 @@ main() {
     check_prereqs &&
     $instr "$@"
 }
-
 
 
 # ===== Main functions ========================================================
@@ -125,7 +124,6 @@ launch_app() {
     echo $window_id > /tmp/tamwm/WID_$cls
 }
 
-
 close_window_workaround() {
     # If no argument passed, operate on active window
     local active target
@@ -176,20 +174,17 @@ manage_dtops() {
     $instr $*
 }
 
-
 dnext() {
     local destination=$(($(active_dtop)+1))
     [[ $(active_dtop) == $(last_dtop) ]] && destination=0
     switch_to_dtop $destination
 }
 
-
 dprev() {
     local destination=$(($(active_dtop)-1))
     [[ $(active_dtop) == 0 ]] && destination=$(last_dtop)
     switch_to_dtop $destination
 }
-
 
 dnum() {
     switch_to_dtop $1
@@ -294,6 +289,5 @@ apply_layout() {
             ;;
     esac
 }
-
 
 [[ "${BASH_SOURCE[0]}" == "$0" ]] && main "$@"
