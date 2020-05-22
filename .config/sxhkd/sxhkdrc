@@ -13,9 +13,12 @@ super + s
 super + shift + @s
     scrot -s && dunstify -r 1 "Screenshot taken."
 
-# run or raise
-super + {w,b,t,f,c}
-    app={irc,ncmpcpp,ranger,vivaldi,vim} && jumpapp -f -c "$app" tamwm -l $app
+# run or raise (workaround atm)
+super + {w,b,t,f}
+    app={irc,ncmpcpp,ranger,vivaldi} && jumpapp -f -c "$app" tamwm -l $app && sleep .2 && jumpapp -f -c "$app" tamwm -l $app
+
+super + c
+    jumpapp -f -c "vim" tamwm -l vim
 
 super + q
     ~/bash_scripts/focus_extra.sh

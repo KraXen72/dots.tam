@@ -25,6 +25,7 @@ alias cmk="setxkbmap us -model pc105angle -variant cmk_ed_dh; xmodmap -e 'keycod
 alias gb="setxkbmap gb -model pc105;"
 alias caps="~/bash_scripts/layout.sh"
 alias insl='sudo apt install'
+alias htop='~/stuff/htop/htop'
 
 function o {
   $* > /dev/null 2>&1 & disown

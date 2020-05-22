@@ -43,7 +43,7 @@ launch_app() {
     local xdo_on_cls="xdotool search --onlyvisible --sync --class"
     local tml_cls="Gnome-terminal"
     pre_cmds()     { :; }
-    after_cmds() { :; }
+    after_cmds()   { :; }
 
     case $1 in
     irc|weechat)
