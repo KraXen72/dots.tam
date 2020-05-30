@@ -7,20 +7,6 @@
 #    - Workaround for closing ARGB windows with no flicker using Picom fade-out.
 #    - Apply preset layouts on workspace (desktop) change
 
-# ==== wmctrl VS xdotool ======================================================
-# - moving windows:
-# xdotool (coordinates include border, hence consistent with wmctrl -lxG output)
-# - re-activating active womdow:
-# xdotool only
-# - keyboard input
-# xdotool only
-# - sending windows to desktop
-# wmctrl -t VS xdotool set_desktop_for_window
-# - listing windows
-# wmctrl only
-# - closing windows
-# wmctrl only
-
 usage() {
     this_script=$(basename "$0")
     echo "Usage: $this_script [OPTION] [ARG]
