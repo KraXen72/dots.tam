@@ -217,6 +217,11 @@
           <action name="Unshade"/>
         </action>
       </mousebind>
+      <mousebind button="W-S-Left" action="Press">
+        <action name="Execute">
+          <command>tamwm -i</command>
+        </action>
+      </mousebind>
     </context>
     <context name="Top">
       <mousebind button="Left" action="Drag">
