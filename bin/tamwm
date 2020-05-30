@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # ==== TAMWM ==================================================================
 # Multi-purpose window-managing script.
 # Dependencies: wmctrl, xdotool
@@ -299,7 +299,7 @@ switch_to_dtop() {
 
 send_to_dtop() {
     set -x
-    unset OPTIND pos size
+    unset pos size
     while getopts p: opt
     do
         case "$opt" in
