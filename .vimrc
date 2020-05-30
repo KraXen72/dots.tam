@@ -32,7 +32,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " TODO: learn to use fzf
 Plug 'junegunn/fzf.vim' " TODO: learn to use
 Plug 'zhou13/vim-easyescape' " jk kj = escape, no visual distraction
 Plug 'michaeljsmith/vim-indent-object' " text object based on indentation
-Plug 'JamshedVesuna/vim-markdown-prev' " markdown preview
+Plug 'machakann/vim-highlightedyank' " briefly hilight yank when not in vis mode
 
 call plug#end()
 
@@ -153,7 +153,7 @@ if (has("termguicolors"))
   set termguicolors
 endif
 set list " show whitespace characters as defined by listchars
-set listchars=tab:·-,trail:~,extends:»,precedes:«,nbsp:⣿
+set listchars=tab:ŝ·,trail:~,extends:»,precedes:«,nbsp:⣿
 set ruler " cursor coordinates
 set wrap " no horizontal scrolling
 set linebreak " break lines in viewport at allowed characters only
@@ -397,4 +397,5 @@ let g:gruvbox_contrast_light = 'hard'
 set t_ZH=^[[3m
 set t_ZR=^[[23
 colorscheme noelle
-
+highlight HighlightedyankRegion guibg=#FFD297
+highlight Visual guibg=#FFE497 gui=none

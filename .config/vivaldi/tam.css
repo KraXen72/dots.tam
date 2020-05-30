@@ -49,7 +49,7 @@ div.button-toolbar.newtab { /* No new tab button. Use Quick Command/CTRL-T, */
 
 /* ACTIVE TAB */
 .tab.active {
-  background-color: #F9DA84 !important;
+  background-color: #F2CC60 !important;
   /*text-shadow: 1px 1px 1px black !important;*/
 }
 .tab-position { /* If active tab has a min-width set in Vivaldi settings, */

@@ -77,19 +77,21 @@ launch_app() {
     vim_one|vim1|nvim1|code1)
         cls=$tml_cls; new_cls="vim_one"
         cmd() { gnome-terminal --window-with-profile noel-notrans --geometry \
-                87x60+37+63 -- sh -c "vim -c 'OpenSession small'; exec zsh"; }
-        after_cmds() { wmctrl -vr $new_cls -t 0; };;
+                87x60+37+63 -- sh -c "NVIM_LISTEN_ADDRESS=/tmp/nvimsocket \
+                vim -c 'OpenSession small'; exec zsh"; }
+        after_cmds() { wmctrl -vxr $new_cls -t 0; };;
 
     vim2|nvim2|code2)
         cls=$tml_cls; new_cls="vim_two"
         cmd() { gnome-terminal --window-with-profile noel-notrans --geometry \
-                175x60+37+63 -- sh -c "vim -c 'OpenSession large'; exec zsh"; }
-        after_cmds() { wmctrl -vr $new_cls -t 1; };;
+                175x60+37+63 -- sh -c "NVIM_LISTEN_ADDRESS=/tmp/nvimsocket2 \
+                vim -c 'OpenSession large'; exec zsh"; }
+        after_cmds() { wmctrl -vxr $new_cls -t 1; };;
 
-        vim|nvim|code)
-            cmd() { launch_app vim2; launch_app vim1; };;
+    vim|nvim|code)
+        cmd() { launch_app vim2; launch_app vim1; };;
 
-        vivaldi|web|browser| main )
+    vivaldi|web|browser| main )
         cls="Vivaldi-stable"; new_cls="vivaldi"; pos="703 63"; size="1208 978"
         cmd() { vivaldi & };;
         # TODO: Layout 1 - pos 1313 63 size 1208 978
@@ -101,7 +103,7 @@ launch_app() {
 
     existing_instances=$(count_cls $cls)
 
-    pre_cmds
+    pre_cmds &> /dev/null
     cmd &> /dev/null
 
     until [[ $(count_cls $cls) -gt $existing_instances ]]; do sleep .1; done
@@ -109,7 +111,6 @@ launch_app() {
     window_id=$(wmctrl -lx | grep "$cls" | awk '{print $1}' | tail -1)
 
     if [[ -n "$new_cls" ]]; then
-        xdotool set_window --name  $new_cls $window_id
         xdotool set_window --class $new_cls $window_id
         cls=$new_cls
     fi

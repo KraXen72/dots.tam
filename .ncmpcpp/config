@@ -14,6 +14,10 @@ mpd_music_dir = ~/music
 ## - 7 - cyan
 ## - 8 - white
 ## - 9 - end of current color
+## If you want to use 256 colors and/or background colors in formats
+## with the syntax $(COLOR), e.g. to set the artist tag to one of the
+## non-standard colors and make it have yellow background, you need to write
+## $(197_yellow)%a$(end).
 
 #### Cover art
 execute_on_song_change="~/.ncmpcpp/art.sh"
@@ -29,6 +33,7 @@ playlist_display_mode = "classic"
 progressbar_look = "▄▄▄"
 progressbar_elapsed_color = "white"
 progressbar_color = "black"
+connected_message_on_startup = no
 
 #### Colors
 header_window_color = "black"
@@ -44,6 +49,8 @@ volume_color = "black:b"
 alternative_header_first_line_format = $6$b» {%f} «$/b
 alternative_header_second_line_format = $4{%b}|{/%D/}
 user_interface = alternative
+current_item_prefix = $(16)$r
+current_item_suffix = $/r$(end)
 
 #### Misc stuff
 discard_colors_if_item_is_selected = "yes"

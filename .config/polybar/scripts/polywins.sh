@@ -1,0 +1,1 @@
+/home/sensei/coding/polybar-windows/polywins.sh

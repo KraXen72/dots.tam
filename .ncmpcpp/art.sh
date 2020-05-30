@@ -78,7 +78,7 @@ close_cover_windows_down_to() {
 }
 
 adjust_window() {
-  while sleep 1; do
+  while sleep 2; do
     get_ncmpcpp_geometry
     get_current_cover_geometry
 

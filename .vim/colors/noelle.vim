@@ -1454,3 +1454,5 @@ highlight PMenu guibg=#F1E5DB guifg=#1F1C1C
 highlight LineNr guifg=#D8B8B3
 "highlight Comment guifg=#D8B8B3
 highlight Todo guibg=#F2CC60
+highlight HighlightedyankRegion guibg=#FFD297
+highlight Visual guibg=#FFE497 gui=none

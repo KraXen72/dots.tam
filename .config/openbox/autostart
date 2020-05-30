@@ -1,3 +1,4 @@
+#!/bin/bash
 # These things are run when an Openbox X Session is started.
 
 /home/sensei/.fehbg
@@ -8,7 +9,6 @@ if test -x @libexecdir@/gnome-settings-daemon >/dev/null; then
 elif which gnome-settings-daemon >/dev/null; then
   gnome-settings-daemon &
 fi
-picom -c --corner-radius 5 &
 polybar tam &
 dunst &
 setxkbmap -option shift:both_capslock &
@@ -17,4 +17,4 @@ xcape -e 'Shift_R=Return' &
 xset dpms 0 0 0 &
 xset s off &
 sxhkd &
-sleep 1 &&
+(while true; do /home/sensei/desktop/picom/build/src/picom -c --corner-radius 5; done) &

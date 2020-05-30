@@ -76,6 +76,7 @@
       <name>南</name>
       <name>西</name>
       <name>北</name>
+      <name>test</name>
     </names>
     <popupTime>1000</popupTime>
   </desktops>
@@ -83,6 +84,10 @@
     <drawContents>yes</drawContents>
     <popupShow>Nonpixel</popupShow>
     <popupPosition>Center</popupPosition>
+    <popupFixedPosition>
+      <x>0</x>
+      <y>0</y>
+    </popupFixedPosition>
   </resize>
   <keyboard>
     <keybind key="W-space">
@@ -173,7 +178,6 @@
     <keybind key="W-S-r">
       <action name="Restart"/>
     </keybind>
-
   </keyboard>
   <mouse>
     <dragThreshold>1</dragThreshold>
@@ -206,9 +210,12 @@
         <action name="Resize"/>
       </mousebind>
       <mousebind button="W-Middle" action="Press">
-        <action name="Lower"/>
-        <action name="FocusToBottom"/>
-        <action name="Unfocus"/>
+        <action name="Execute">
+          <command>~/bash_scripts/slop_resize.sh</command>
+          <action name="Focus"/>
+          <action name="Raise"/>
+          <action name="Unshade"/>
+        </action>
       </mousebind>
     </context>
     <context name="Top">
@@ -370,26 +377,6 @@
           </command>
         </action>
       </mousebind>
-      <mousebind button="A-Up" action="Click">
-        <action name="GoToDesktop">
-          <to>previous</to>
-        </action>
-      </mousebind>
-      <mousebind button="A-Down" action="Click">
-        <action name="GoToDesktop">
-          <to>next</to>
-        </action>
-      </mousebind>
-      <mousebind button="C-A-Up" action="Click">
-        <action name="GoToDesktop">
-          <to>previous</to>
-        </action>
-      </mousebind>
-      <mousebind button="C-A-Down" action="Click">
-        <action name="GoToDesktop">
-          <to>next</to>
-        </action>
-      </mousebind>
       <mousebind button="Left" action="Press">
         <action name="Focus"/>
         <action name="Raise"/>
@@ -472,8 +459,25 @@
     <application class="Polybar">
       <layer>below</layer>
     </application>
-  <application class="Yad">
-    <desktop>1</desktop>
-  </application>
+    <application class="Yad">
+      <desktop>1</desktop>
+    </application>
   </applications>
+  <margins>
+    <left>0</left>
+    <right>0</right>
+    <top>0</top>
+    <bottom>0</bottom>
+  </margins>
+  <dock>
+    <position>TopLeft</position>
+    <floatingX>0</floatingX>
+    <floatingY>0</floatingY>
+    <stacking>Above</stacking>
+    <direction>Vertical</direction>
+    <noStrut>no</noStrut>
+    <autoHide>no</autoHide>
+    <hideDelay>300</hideDelay>
+    <showDelay>300</showDelay>
+  </dock>
 </openbox_config>
