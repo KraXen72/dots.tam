@@ -33,8 +33,8 @@ super + {h,l}
 super + {1-4}
     tamwm -d dnum {0-3}
 
-super + shift + {1,2}
-    tamwm -s {main,secondary}
+super + shift + {1-5}
+    tamwm -s {1-5}
 
 ctrl + super +  {1-4}
     xdotool getactivewindow set_desktop_for_window {0-3}
