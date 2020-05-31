@@ -41,3 +41,6 @@ ctrl + super +  {1-4}
 
 super + Return
     /home/sensei/bash_scripts/init.sh
+
+super + z
+    tamwm -i

@@ -177,7 +177,6 @@ move_window_to_preset() {
 }
 
 invert_windows() {
-    sleep .3
     # TODO: find how to concisely assign variables
     active=$(active_window)
     target=$(xdotool selectwindow)
@@ -255,7 +254,7 @@ check_prereqs() {
 
 # ==== Launch app helpers
 count_cls() {
-    wmctrl -lx | awk '$3~"'"$1"'"{i++} END{print i}'
+    wmctrl -lx | awk 'BEGIN {i=0} $3~"'"$1"'"{i++} END{print i}'
 }
 
 openbox_actions() {
@@ -312,7 +311,6 @@ switch_to_dtop() {
 }
 
 send_to_dtop() {
-    set -x
     unset pos size
     while getopts p: opt
     do
