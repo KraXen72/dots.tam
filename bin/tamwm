@@ -107,7 +107,7 @@ launch_app() {
         after_cmds() { move_window_to_preset 2; };;
 
     *)
-        printf '%s\n' "Available -o arguments:" \
+        printf '%s\n' "Available -l arguments:" \
             "irc ncmpcpp ranger vivaldi vim1 vim2 spare 3terms"; exit 1 ;;
 
     esac
@@ -147,25 +147,25 @@ move_window_to_preset() {
     case "$(active_dtop)" in
     0) # first workspace/layout
         case "$1" in
-        1) x=37; y=63; w=627; h=978 ;;
-        2) x=703; y=63; w=1208; h=978 ;;
-        3) x=1950; y=63; w=571; h=370 ;;
-        4) x=1950; y=471; w=571; h=226 ;;
-        5) x=1950; y=735; w=571; h=306 ;;
+        1) x=37;   y=63;  w=627;  h=978 ;;
+        2) x=703;  y=63;  w=1208; h=978 ;;
+        3) x=1950; y=63;  w=571;  h=370 ;;
+        4) x=1950; y=471; w=571;  h=226 ;;
+        5) x=1950; y=735; w=571;  h=306 ;;
         esac
         ;;
     1) # second workspace/layout
         case "$1" in
-        1) x=37; y=63; w=1243; h=978 ;;
+        1) x=37;   y=63; w=1243; h=978 ;;
         2) x=1313; y=63; w=1208; h=978 ;;
         esac
         ;;
     2) # third workspace/layout
         case "$1" in
-        1) x=37; y=63; w=1243; h=978 ;;
-        3) x=1950; y=63; w=571; h=370 ;;
-        4) x=1950; y=471; w=571; h=226 ;;
-        5) x=1950; y=735; w=571; h=306 ;;
+        1) x=37;   y=63;  w=1243; h=978 ;;
+        3) x=1950; y=63;  w=571;  h=370 ;;
+        4) x=1950; y=471; w=571;  h=226 ;;
+        5) x=1950; y=735; w=571;  h=306 ;;
         esac
         ;;
     *) echo "Usage: move_window_to_preset 3"; exit
