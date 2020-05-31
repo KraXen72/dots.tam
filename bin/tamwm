@@ -83,13 +83,17 @@ launch_app() {
     vim_one|vim1|nvim1|code1)
         cls=$tml_cls
         new_cls="vim_one"
-        cmd() { $tml2 87x60+37+63 -- sh -c "NVIM_LISTEN_ADDRESS=/tmp/nvimsocket vim -c 'OpenSession small'; exec zsh"; }
+        cmd() { $tml2 87x60+37+63 -- sh -c \
+                "NVIM_LISTEN_ADDRESS=/tmp/nvimsocket \
+                vim -c 'OpenSession small'; exec zsh"; }
         after_cmds() { wmctrl -vxr $new_cls -t 0; };;
 
     vim2|nvim2|code2)
         cls=$tml_cls
         new_cls="vim_two"
-        cmd() { $tml2 175x60+37+63 -- sh -c "NVIM_LISTEN_ADDRESS=/tmp/nvimsocket2 vim -c 'OpenSession large'; exec zsh"; }
+        cmd() { $tml2 175x60+37+63 -- sh -c \
+                "NVIM_LISTEN_ADDRESS=/tmp/nvimsocket2 \
+                vim -c 'OpenSession large'; exec zsh"; }
         after_cmds() { wmctrl -vxr $new_cls -t 1; };;
 
     vim|nvim|code)
