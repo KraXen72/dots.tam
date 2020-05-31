@@ -14,7 +14,8 @@ usage() {
           vivaldi, spare, 3terms)
 -x        Workaround that closes a window with no flicker using Picom
 -d        Desktop manager (args: dprev, dnext, dnum n)
--s        Positions window (args: main, secondary)"
+-s        Positions window (args: 1, 2, 3 etc)
+-i        Switch active window position with another one mouse-selected"
 }
 
 main() {
