@@ -28,7 +28,6 @@ main() {
         esac
     done
     shift
-    check_prereqs &&
     $instr "$@"
 }
 
@@ -220,21 +219,6 @@ dnum() {
 # ===== Helper functions ======================================================
 # =============================================================================
 
-# ==== Main block helpers
-die() {
-    printf '%s\n' "$1" >&2; exit 1
-}
-
-warn() {
-    echo "$0:" "$@" >&2
-}
-
-check_prereqs() {
-    has_command() { hash "$1" 2>/dev/null; }
-    has_command wmctrl || die 'Error: Aborted. Please install wmctrl.'
-    has_command xdotool || die 'Error: Aborted. Please install xdotool.'
-}
-
 # ==== Launch app helpers
 count_cls() {
     wmctrl -lx | awk 'BEGIN {i=0} $3~"'"$1"'"{i++} END{print i}'
@@ -256,7 +240,7 @@ position_window() {
         y) y="$OPTARG" ;;
         w) width="$OPTARG" ;;
         h) height="$OPTARG" ;;
-        *) warn "invalid options (ixywh)";;
+        *) echo "invalid options (ixywh)";;
         esac
     done
 
