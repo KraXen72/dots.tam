@@ -6,6 +6,7 @@
 #    - Launch_app applications with preset geometry
 #    - Workaround for closing ARGB windows with no flicker using Picom fade-out.
 #    - Apply preset layouts on workspace (desktop) change
+#    - Send a window to a position preset
 
 usage() {
     this_script=$(basename "$0")
