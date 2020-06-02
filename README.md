@@ -11,11 +11,9 @@ Tiling is more flexible, but wastes time adjusting things by hand when a window 
 * Apps are launched in a script that positions them.
 * Hotkeys can position a window to any preset -- used to "tab" extra apps onto other windows' grid cells.
 * When entering a workspace, windows reposition themselves as per that workspace's layout.
-
-
-* **Workspace 1:** 80-column Vim (+ line and sign columns), web browser, weechat, ncmpcpp and ranger terminals
-* **Workspace 2:** 2x80-column Vim, web browser
-* **Workspace 3:** 2x80-column Vim, weechat, ncmpcpp and ranger terminals
+  * **Workspace 1:** 80-column Vim (+ line and sign columns), web browser, weechat, ncmpcpp and ranger terminals
+  * **Workspace 2:** 2x80-column Vim, web browser
+  * **Workspace 3:** 2x80-column Vim, weechat, ncmpcpp and ranger terminals
 
 ## Per-application run-or-raise binds.
 
