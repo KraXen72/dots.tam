@@ -27,10 +27,18 @@ alias caps="~/bash_scripts/layout.sh"
 alias insl='sudo apt install'
 alias htop='~/stuff/htop/htop'
 
-function o {
+o() {
   $* > /dev/null 2>&1 & disown
 }
-function O {
+
+O() {
   $* > /dev/null 2>&1 & disown
   exit
+}
+
+wid(){
+    slop -n 1 -f "%i"
+}
+parent() {
+    slop -n 0 -f "%i"
 }

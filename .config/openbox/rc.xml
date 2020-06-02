@@ -211,10 +211,7 @@
       </mousebind>
       <mousebind button="W-Middle" action="Press">
         <action name="Execute">
-          <command>~/bash_scripts/slop_resize.sh</command>
-          <action name="Focus"/>
-          <action name="Raise"/>
-          <action name="Unshade"/>
+          <command>sloppymove</command>
         </action>
       </mousebind>
       <mousebind button="W-S-Left" action="Press">
