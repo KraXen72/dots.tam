@@ -2,9 +2,7 @@
 
 ![workflow](workflow.gif)
 
-## Workflow
-
-### Pseudo-tiling / manual tiling / programmatic floating
+## Pseudo-tiling / manual tiling / programmatic floating
 
 With programmatic floating, I spend near-zero time positioning my windows. Since they are always in the same place, my eyes always know where to go. And my window layout is always well-rounded. Windows are never too small or too large.
 
@@ -20,7 +18,7 @@ I use a tag system where windows can be in several workspaces at once. They are 
 * **Workspace 2:** 2x80-column Vim, web browser
 * **Workspace 3:** 2x80-column Vim, weechat, ncmpcpp and ranger terminals
 
-### Per-application run-or-raise binds.
+## Per-application run-or-raise binds.
 
 [Alt-tab is slow.](https://vickychijwani.me/blazing-fast-application-switching-in-linux/) Cardinal window switching is slow. Putting apps on dedicated workspaces is slow. 
 
