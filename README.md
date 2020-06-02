@@ -4,7 +4,7 @@
 
 ## Programmatic floating
 
-With [programmatic floating](https://github.com/alnj/dotfiles/blob/master/bin/tamwm), I spend no time positioning windows. Always in the same spots, my eyes always know where to find them. Strictly positioned, apps are never too small or large.
+With [programmatic floating](https://github.com/alnj/dotfiles/blob/master/bin/tamwm), I spend no time positioning windows. Always in the same spots, my eyes always know where to find them. Apps are strictly positioned, never too small or large.
 
 Tiling is more flexible, but wastes time adjusting things by hand when a window is inconveniently positioned. Complex rules can make tiling highly efficient, but programmatic floating can be as simple as making apps open in the right position.
 
