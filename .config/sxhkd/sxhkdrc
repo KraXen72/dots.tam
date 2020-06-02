@@ -28,10 +28,10 @@ super + shift + {w}
     {jumpapp -f -c "spare" tamwm -l spare}
 
 super + {h,l}
-    tamwm -d {dprev,dnext}
+    tamwm -d {prev,next}
 
 super + {1-4}
-    tamwm -d dnum {0-3}
+    tamwm -d {0-3}
 
 super + shift + {1-5}
     tamwm -s {1-5}

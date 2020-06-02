@@ -176,7 +176,7 @@ set ignorecase
 set smartcase " Don't ignore case if you input caps
 
 set foldmethod=syntax
-set foldnestmax=2
+set foldnestmax=1
 set nofoldenable
 set foldlevel=1
 

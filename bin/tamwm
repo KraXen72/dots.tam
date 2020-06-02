@@ -1,7 +1,7 @@
 #!/bin/sh
 # ==== TAMWM ==================================================================
 # Multi-purpose window-managing script.
-# Dependencies: wmctrl, xdotool, xwininfo
+# Dependencies: wmctrl, xdotool
 # Features:
 #    - Launch_app applications with preset geometry
 #    - Workaround for closing ARGB windows with no flicker using Picom fade-out.
@@ -9,8 +9,7 @@
 #    - Send a window to a position preset
 
 usage() {
-    this_script=$(basename "$0")
-    echo "Usage: $this_script [OPTION] [ARG]
+    echo "Usage: tamwm [OPTION] [ARG]
 -l        Launch_app and position a program (args: irc, ncmpcpp, ranger, vim,
           vivaldi, spare, 3terms)
 -x        Workaround that closes a window with no flicker using Picom
@@ -23,7 +22,7 @@ main() {
         case "$opt" in
         l) instr="launch_app";;
         x) instr="close_window_workaround";;
-        d) instr="manage_dtops";;
+        d) instr="dgoto";;
         s) instr="move_window_to_preset";;
         *) instr="usage";;
         esac
@@ -37,7 +36,6 @@ main() {
 # =============================================================================
 
 launch_app() {
-    set -x
     tml="gnome-terminal --window-with-profile noel --geometry"
     tml2="gnome-terminal --window-with-profile noel-notrans --geometry"
     tml_cls="Gnome-terminal"
@@ -49,35 +47,27 @@ launch_app() {
     irc|weechat)
         cls=$tml_cls
         new_cls="irc"
-        cmd() { $tml 79x22+1950+63 -- sh -c "mosh takat.su -- tmux a"; }
-        ;;
+        cmd() { $tml 79x22+1950+63 -- sh -c "mosh takat.su -- tmux a"; } ;;
 
     ncmpcpp|music)
         cls=$tml_cls
         new_cls="ncmpcpp"
         cmd() { $tml 79x13+1950+471 -- sh -c "ncmpcpp; clear; exec zsh"; }
-        after_cmds() { openbox_actions to_bottom; }
-        ;;
+        after_cmds() { openbox_actions to_bottom; } ;;
 
     ranger|r|kranger|fm)
         cls=$tml_cls
         new_cls="ranger"
         cmd() { $tml 79x18+1950+735 -- sh -c "r /media/kokone/anime; exec zsh"; }
-        pre_cmds() { mount | grep takat &&
-                     sshfs alpha@takat.su:/home/alpha/ /media/sensei/takatsu & }
-        ;;
-
-    3terms)
-        cmd() { launch_app irc; launch_app ncmpcpp; launch_app ranger; }
-        ;;
+        pre_cmds() { mount | grep takat ||
+                   sshfs alpha@takat.su:/home/alpha/ /media/sensei/takatsu & };;
 
     spare)
         cls=$tml_cls
         new_cls="spare"
         read -r irc_id </tmp/tamwm/WID_irc
         cmd() { $tml 79x22+1950+63; }
-        pre_cmds() { xdotool windowminimize "$irc_id"; }
-        ;;
+        pre_cmds() { xdotool windowminimize "$irc_id"; } ;;
 
     vim_one|vim1|nvim1|code1)
         cls=$tml_cls
@@ -104,9 +94,8 @@ launch_app() {
         cmd() { vivaldi & }
         after_cmds() { move_window_to_preset 2; };;
 
-    *)
-        printf '%s\n' "Available -l arguments:" \
-            "irc ncmpcpp ranger vivaldi vim1 vim2 spare 3terms"; exit 1 ;;
+    *) printf '%s\n' "Available -l arguments:" \
+       "irc ncmpcpp ranger vivaldi vim1 vim2 spare"; exit 1 ;;
 
     esac
 
@@ -125,7 +114,7 @@ launch_app() {
     fi
 
     xdotool windowfocus "$window_id"
-    after_cmds
+    after_cmds >/dev/null 2>&1
     mkdir -p /tmp/tamwm
     echo "$window_id" > /tmp/tamwm/WID_"$cls"
     unset cls new_cls pos size existing_instances window_id tml tml_cls
@@ -133,21 +122,21 @@ launch_app() {
 
 close_window_workaround() {
     # If no argument passed, operate on active window
-    active=$(active_window)
-    [ -z "$1" ] && target=$active
+    [ -z "$1" ] && target=$(active_window)
     [ -n "$1" ] && target=$1
     xdotool windowminimize "$target"
     wmctrl -ic "$target"
-    unset active target
 }
 
 move_window_to_preset() {
     target_dtop=$(active_dtop)
+
     while getopts t: opt; do
         case "$opt" in
         t) target_dtop="$OPTARG"; shift;;
         esac
     done
+
     case "$target_dtop" in
     0) # first workspace/layout
         case "$1" in
@@ -172,11 +161,12 @@ move_window_to_preset() {
         5) x=1950; y=735; w=571;  h=306 ;;
         esac
         ;;
-    *) echo "Usage: move_window_to_preset 3"; exit
+    *) echo "Use: move_window_to_preset 3 / move_window_to_preset -t 2 1"; exit
         ;;
     esac
+
     if [ -z "$2" ]; then
-        target_window="active"
+        target_window="$(active_window)"
     else
         read -r target_window </tmp/tamwm/WID_"$2"
     fi
@@ -185,42 +175,25 @@ move_window_to_preset() {
     unset x y w h
 }
 
-# ==== Desktop Management
-manage_dtops() {
+dgoto() {
     case "$1" in
-    dnext) instr="dnext";;
-    dprev) instr="dprev";;
-    dnum)  instr="dnum $2";;
-    *) echo "Available -d argument: dnext, dprev, dnum n"; exit;;
+    next) destination=$(($(active_dtop)+1))
+          [ "$(active_dtop)" = "$(last_dtop)" ] && destination=0
+          switch_to_dtop "$destination"
+          ;;
+    prev) destination=$(($(active_dtop)-1))
+          [ "$(active_dtop)" = 0 ] && destination=$(last_dtop)
+          switch_to_dtop "$destination"
+          ;;
+    *)    switch_to_dtop "$1"
     esac
-    $instr "$@"
-    unset instr
-}
-
-dnext() {
-    destination=$(($(active_dtop)+1))
-    [ "$(active_dtop)" = "$(last_dtop)" ] && destination=0
-    switch_to_dtop "$destination"
-    unset destination
-}
-
-dprev() {
-    destination=$(($(active_dtop)-1))
-    [ "$(active_dtop)" = 0 ] && destination=$(last_dtop)
-    switch_to_dtop "$destination"
-    unset destination
-}
-
-dnum() {
-    switch_to_dtop "$1"
 }
 
 
-
-# ===== Helper functions ======================================================
+# ===== Secondary functions ===================================================
 # =============================================================================
 
-# ==== Launch app helpers
+# ==== App launcher
 count_cls() {
     wmctrl -lx | awk 'BEGIN {i=0} $3~"'"$1"'"{i++} END{print i}'
 }
@@ -245,71 +218,28 @@ position_window() {
         esac
     done
 
-    if [ "$id" = "active" ]; then
-        id=$(active_window)
-    fi
-
-    if [ -n "$x" ] && [ -n "$y" ]; then
+    if [ -n "$x" ] || [ -n "$y" ]; then
         xdotool windowmove "$id" "$x" "$y"
     fi
 
-    if [ -n "$width" ] && [ -n "$height" ]; then
+    if [ -n "$width" ] || [ -n "$height" ]; then
         xdotool windowsize "$id" "$width" "$height"
     fi
 
-    unset id x y width height active
+    unset id x y width height
 }
 
-# ==== Desktop management helpers
-active_dtop() {
-    wmctrl -d | awk '/\*/ {print $1}'
-}
-
-active_window() {
-    xprop -root _NET_ACTIVE_WINDOW | awk '{print "0x0"substr($5,3)}'
-}
-
-last_dtop() {
-    wmctrl -d | awk 'END {print $1}'
-}
-
+# ==== Desktop management
 switch_to_dtop() {
     active_window=$(active_window)
-    active_dtop=$(active_dtop)
-
     apply_layout "$1"
     wmctrl -s "$1"
     sleep .2
     xdotool windowfocus "$active_window"
-    unset active_window active_desktop
-}
-
-send_to_dtop() {
-    unset pos size
-    while getopts p: opt
-    do
-        case "$opt" in
-        p) target_pos="$OPTARG" ;;
-        *) ;;
-        esac
-    done
-    shift $(( OPTIND - 1 ))
-
-    [ -z "$target_layout" ] && target_layout=$(active_dtop)
-
-    for cls in "$@"; do
-        read -r window_id </tmp/tamwm/WID_"$cls"
-        xdotool set_desktop_for_window "$window_id" "$target_layout"
-        xdotool set_desktop_for_window "$window_id" "$target_layout"
-        xdotool windowactivate "$window_id"
-        xdotool windowactivate "$window_id"
-        move_window_to_preset "$target_pos" "$1"
-    done
 }
 
 apply_layout() {
-    target_layout=$(active_dtop)
-    [ -n "$1" ] && target_layout=$1
+    [ -n "$1" ] && target_layout=$1 || target_layout=$(active_dtop)
 
     case $target_layout in
         0)
@@ -332,8 +262,38 @@ apply_layout() {
         send_to_dtop -p "1" vim_two &
         ;;
     esac
-    unset target_layout
 }
 
+send_to_dtop() {
+    while getopts p: opt; do
+        case "$opt" in
+        p) target_pos="$OPTARG" ;;
+        *) ;;
+        esac
+    done
+    shift $(( OPTIND - 1 ))
+
+    [ -z "$target_layout" ] && target_layout=$(active_dtop)
+
+    read -r window_id </tmp/tamwm/WID_"$1"
+    xdotool set_desktop_for_window "$window_id" "$target_layout"
+    xdotool set_desktop_for_window "$window_id" "$target_layout"
+    xdotool windowactivate "$window_id"
+    xdotool windowactivate "$window_id"
+    move_window_to_preset "$target_pos" "$1"
+}
+
+# === Misc
+active_dtop() {
+    wmctrl -d | awk '/\*/ {print $1}'
+}
+
+active_window() {
+    xdotool getactivewindow
+}
+
+last_dtop() {
+    wmctrl -d | awk 'END {print $1}'
+}
 
 main "$@"
