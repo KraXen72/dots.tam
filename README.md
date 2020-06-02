@@ -6,15 +6,13 @@
 
 ### Pseudo-tiling / manual tiling / programmatic floating
 
-Classical tiling, well, isn't my thing. With programmatic floating, I spend near-zero time positioning my windows. They are always in the same place, so my eyes always know where to go. And my window layout is always well-rounded. There may be times that some screen estate is taken up by unused terminals, but I strongly belive that there is such a thing as an overly large window, and that my browser and terminals are roughly all the ideal size.
+With programmatic floating, I spend near-zero time positioning my windows. Since they are always in the same place, my eyes always know where to go. And my window layout is always well-rounded. Windows are never too small or too large.
 
-Classical tiling is way more flexible, at the cost of frequently having windows at unusable sizes in unusable positions. This requires you to get in there and adjust things. Of course, carefully scripted sets of rules can make tiling highly efficient. But despite the complexity of my current programmatic floating scripts, it started out very lean yet usable.
-
-Those are the ways that I utilize programmatic floating:
+Tiling is more flexible, at the cost of frequently having unusable positioned windows, losing you time to get in there and adjust things. Carefully scripted rules can make tiling highly efficient, but despite the complexity of my current programmatic floating scripts, it started out very lean yet usable.
 
 * App launching is done through a wrapper script that positions apps in hardcoded presets after launching them.
 * Keybinds can re-position any window to any preset position -- this is usually used to "tab" extra applications onto the same grid cell as another window.
-* Each workspace possesses different window position presets.
+* Each workspace possesses different window position presets. Any time a workspace is switched to, its preset layout is applied to the open windows.
 
 I use a tag system where windows can be in several workspaces at once. They are organised like so:
 
