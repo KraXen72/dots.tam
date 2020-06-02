@@ -1,5 +1,5 @@
 # dotfiles
 
-Pseudo-tiling workflow demonstration: https://u.teknik.io/I4j5O.mp4
+![workflow](workflow.gif)
 
 ![scrot](https://u.teknik.io/7BKDi.png)
