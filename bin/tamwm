@@ -14,8 +14,7 @@ usage() {
           vivaldi, spare, 3terms)
 -x        Workaround that closes a window with no flicker using Picom
 -d        Desktop manager (args: dprev, dnext, dnum n)
--s        Positions window (args: 1, 2, 3 etc)
--i        Switch active window position with another one mouse-selected"
+-s        Positions window (args: 1, 2, 3 etc)"
 }
 
 main() {
@@ -25,7 +24,6 @@ main() {
         x) instr="close_window_workaround";;
         d) instr="manage_dtops";;
         s) instr="move_window_to_preset";;
-        i) instr="invert_windows";;
         *) instr="usage";;
         esac
     done
@@ -185,32 +183,6 @@ move_window_to_preset() {
     position_window -x "$x" -y "$y" -w "$w" -h "$h" -i "$target_window"
     xdotool getactivewindow windowactivate
     unset x y w h
-}
-
-invert_windows() {
-    # TODO: find how to concisely assign variables
-    active=$(active_window)
-    target=$(xdotool selectwindow)
-    wbw=1 # wm border width
-
-    ag() { # active window geometry
-        xdotool getwindowgeometry "$active" |
-        awk -F"[ x,]" 'BEGIN {RS="%"}{print $5" "$6" "$11" "$12 }' |
-        awk -v i=$1 '{print $i}'
-    }
-
-    tg() { # target window geometry
-        xdotool getwindowgeometry "$target" |
-        awk -F"[ x,]" 'BEGIN {RS="%"}{print $5" "$6" "$11" "$12 }' |
-        awk -v i=$1 '{print $i}'
-    }
-
-    ax=$(($(ag 1)-$wbw)); ay=$(($(ag 2)-$wbw)); aw=$(ag 3); ah=$(ag 4);
-    tx=$(($(tg 1)-$wbw)); ty=$(($(tg 2)-$wbw)); tw=$(tg 3); th=$(tg 4);
-    position_window -x "$tx" -y "$ty" -w "$tw" -h "$th" -i "$active"
-    position_window -x "$ax" -y "$ay" -w "$aw" -h "$ah" -i "$target"
-
-    unset active target
 }
 
 # ==== Desktop Management
