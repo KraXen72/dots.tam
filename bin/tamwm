@@ -36,9 +36,9 @@ main() {
 # =============================================================================
 
 launch_app() {
-    tml="gnome-terminal --window-with-profile noel --geometry"
-    tml2="gnome-terminal --window-with-profile noel-notrans --geometry"
-    tml_cls="Gnome-terminal"
+    set -x
+    tml="alacritty"
+    tml_cls="Alacritty"
     pre_cmds()     { :; }
     after_cmds()   { :; }
 
@@ -47,46 +47,53 @@ launch_app() {
     irc|weechat)
         cls=$tml_cls
         new_cls="irc"
-        cmd() { $tml 79x22+1950+63 -- sh -c "mosh takat.su -- tmux a"; } ;;
+        cmd() { $tml -e sh -c 'mosh takat.su -- tmux a'; }
+        after_cmds() { move_window_to_preset 3; } ;;
 
     ncmpcpp|music)
         cls=$tml_cls
         new_cls="ncmpcpp"
-        cmd() { $tml 79x13+1950+471 -- sh -c "ncmpcpp; clear; exec zsh"; }
-        after_cmds() { openbox_actions to_bottom; } ;;
+        cmd() { $tml -e sh -c "ncu; clear; exec zsh"; }
+        after_cmds() { move_window_to_preset 4; }
+        ;;
 
     ranger|r|kranger|fm)
         cls=$tml_cls
         new_cls="ranger"
-        cmd() { $tml 79x18+1950+735 -- sh -c "r /media/kokone/anime; exec zsh"; }
+        cmd() { $tml -e sh -c "r /media/kokone/anime; exec zsh"; }
         pre_cmds() { mount | grep takat ||
-                   sshfs alpha@takat.su:/home/alpha/ /media/sensei/takatsu & };;
+                   sshfs alpha@takat.su:/home/alpha/ /media/sensei/takatsu & }
+        after_cmds() { move_window_to_preset 5; }
+        ;;
 
     spare)
         cls=$tml_cls
         new_cls="spare"
         read -r irc_id </tmp/tamwm/WID_irc
-        cmd() { $tml 79x22+1950+63; }
-        pre_cmds() { xdotool windowminimize "$irc_id"; } ;;
+        cmd() { $tml; }
+        #pre_cmds() { xdotool windowminimize "$irc_id"; }
+        after_cmds() { move_window_to_preset 3; }
+        ;;
 
     vim_one|vim1|nvim1|code1)
         cls=$tml_cls
         new_cls="vim_one"
-        cmd() { $tml2 87x60+37+63 -- sh -c \
+        cmd() { $tml -e sh -c \
                 "NVIM_LISTEN_ADDRESS=/tmp/nvimsocket \
                 vim -c 'OpenSession small'; exec zsh"; }
-        after_cmds() { wmctrl -vxr $new_cls -t 0; };;
+        after_cmds() { move_window_to_preset 1; };;
 
     vim2|nvim2|code2)
         cls=$tml_cls
         new_cls="vim_two"
-        cmd() { $tml2 175x60+37+63 -- sh -c \
+        cmd() { $tml -e sh -c \
                 "NVIM_LISTEN_ADDRESS=/tmp/nvimsocket2 \
                 vim -c 'OpenSession large'; exec zsh"; }
-        after_cmds() { wmctrl -vxr $new_cls -t 1; };;
+        after_cmds() { move_window_to_preset -t "1" 1
+                       wmctrl -vxr $new_cls -t 1;   };;
 
     vim|nvim|code)
-        cmd() { launch_app vim2; launch_app vim1; };;
+        cmd() { launch_app vim2; launch_app vim1; exit; };;
 
     vivaldi|web|browser| main )
         cls="Vivaldi-stable"
@@ -101,8 +108,8 @@ launch_app() {
 
     existing_instances=$(count_cls $cls)
 
-    pre_cmds >/dev/null 2>&1
-    cmd >/dev/null 2>&1
+    pre_cmds >/dev/null 2>&1 &
+    cmd >/dev/null 2>&1 &
 
     until [ "$(count_cls $cls)" -gt "$existing_instances" ]; do sleep .1; done
 
@@ -114,7 +121,7 @@ launch_app() {
     fi
 
     xdotool windowfocus "$window_id"
-    after_cmds >/dev/null 2>&1
+    after_cmds >/dev/null 2>&1 &
     mkdir -p /tmp/tamwm
     echo "$window_id" > /tmp/tamwm/WID_"$cls"
     unset cls new_cls pos size existing_instances window_id tml tml_cls
@@ -137,28 +144,38 @@ move_window_to_preset() {
         esac
     done
 
+    top()         { y=36; }
+    left()        { x=14;  }
+    full_height() { h=1026; }
+    vim_two_pos() { top; left; w=1243; full_height; }
+    eighty_six_cols() { w=627; }
+    right_slave() { x=1919; eighty_six_cols; }
+    irc_pos()     { right_slave; y=36; h=386; }
+    ncmpcpp_pos() { right_slave; y=444; h=242; }
+    ranger_pos()  { right_slave; y=708; h=354; }
+
     case "$target_dtop" in
     0) # first workspace/layout
         case "$1" in
-        1) x=37;   y=63;  w=627;  h=978 ;;
-        2) x=703;  y=63;  w=1208; h=978 ;;
-        3) x=1950; y=63;  w=571;  h=370 ;;
-        4) x=1950; y=471; w=571;  h=226 ;;
-        5) x=1950; y=735; w=571;  h=306 ;;
+        1) top; left; eighty_six_cols; full_height ;;
+        2) top; x=677;  w=1206; 86_cols ;;
+        3) irc_pos ;;
+        4) ncmpcpp_pos ;;
+        5) ranger_pos ;;
         esac
         ;;
     1) # second workspace/layout
         case "$1" in
-        1) x=37;   y=63; w=1243; h=978 ;;
-        2) x=1313; y=63; w=1208; h=978 ;;
+        1) vim_two_pos ;;
+        2) x=1293; top; w=1253; full_height ;;
         esac
         ;;
     2) # third workspace/layout
         case "$1" in
-        1) x=37;   y=63;  w=1243; h=978 ;;
-        3) x=1950; y=63;  w=571;  h=370 ;;
-        4) x=1950; y=471; w=571;  h=226 ;;
-        5) x=1950; y=735; w=571;  h=306 ;;
+        1) vim_two_pos ;;
+        3) irc_pos ;;
+        4) ncmpcpp_pos ;;
+        5) ranger_pos ;;
         esac
         ;;
     *) echo "Use: move_window_to_preset 3 / move_window_to_preset -t 2 1"; exit
@@ -179,14 +196,23 @@ dgoto() {
     case "$1" in
     next) destination=$(($(active_dtop)+1))
           [ "$(active_dtop)" = "$(last_dtop)" ] && destination=0
-          switch_to_dtop "$destination"
           ;;
     prev) destination=$(($(active_dtop)-1))
           [ "$(active_dtop)" = 0 ] && destination=$(last_dtop)
-          switch_to_dtop "$destination"
           ;;
-    *)    switch_to_dtop "$1"
+    *)    destination="$1"
     esac
+
+    if [ "$destination" = "0" ] || [ "$destination" = "1" ]; then
+        feh --bg-tile ~/pictures/solidbeige2.gif
+    fi
+
+    if [ "$destination" = "2" ] || [ "$destination" = "3" ]; then
+        feh --no-fehbg --bg-scale ~/pictures/Wallpapers/main.jpg
+    fi
+
+    switch_to_dtop "$destination"
+
 }
 
 

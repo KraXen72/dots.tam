@@ -1,166 +1,116 @@
 #!/bin/bash
-# TAM/LPF'S NCMPCPP ALBUM ART (_really_ hacky)
+# No other shell than bash can be used with ueberzug
 
-# Dynamically positions the cover image in a Yad window,
+# Image will be wrongly positioned, if at all, when using a terminal with scrollbar or menubar.
 
-# INSTRUCTIONS FOR OPTIMAL USE
-# 1. FILL in the settings below.
-# 2. SAVE file to ~/.ncmpcpp/art.sh, make it executable (chmod +x art.sh),
-# put in ~/.ncmpcpp/config:
-# execute_on_song_change="/path/to/this/file"
-# 3. IF possible, set your WM to have undecorated Yad widget window
-# and have the ncmpcpp window always below the Yad window.
-# 4. PUT in ~/.config/gtk-3.0/gtk.css ->
-# yad-dialog-window,
-# yad-dialog-window decoration,
-# yad-dialog-window decoration:backdrop {
-#  background-color: [your terminal background color];
-#  border: 0;
-#  padding: 0;
-# }
-# 5. PUT in Compton/Picom settings (Picom: ~/.config/picom/picom.conf)
-# shadow-exclude = [
-#    "name = 'mpdcover'",
-# ];
+# Seems to work on: (please report any bugs)
+# alacritty
+# urxvt
+# kitty
+# gnome-terminal (cover might display on the wrong terminal instance)
+
+# Doesn't work on:
+# konsole
 
 # SETTINGS
-music_dir=$HOME/music # mpd music library directory
+music_library=$HOME/music # mpd music library directory
 fallback="$HOME/.ncmpcpp/catnoelle.png" # image used if no cover is found
-rounding=15 # Corner rounding
-margin_top=55 
-margin_bottom=30
-margin_right=20
-sleep .2 # Consider increasing this if the script glitches on opening
+
+padding_top=3
+padding_bottom=1
+padding_right=2
+reserved_playlist_cols=30
+
+#font_height=16
+#font_width=7
+# TODO; guess font size more portably
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 main() {
-  kill_previous_instance &> /dev/null
-  {
-    make_cover_window
-    sleep .2
-    close_cover_windows_down_to 1
-    adjust_window
-  } &> /dev/null &
+    kill_previous_instance_of_this_script
+    find_cover_image
+    display_cover_image
+    detect_window_resizes
 }
 
-kill_previous_instance() {
-  local script_name=${BASH_SOURCE[0]}
-  for pid in $(pidof -x $script_name); do
-    if [ $pid != $$ ]; then
-        kill -9 $pid
-    fi 
-  done
+kill_previous_instance_of_this_script() {
+    script_name=$(basename "$0")
+    for pid in $(pidof -x $script_name); do
+        if [ $pid != $$ ]; then
+            kill -15 $pid
+        fi 
+    done
 }
 
-make_cover_window() {
-  get_ncmpcpp_geometry
-  setup_files
-  clean_up_tmp
-  scale_cover
-  round_cover_corners
-
-  # Everything below except Yad command is for tamwm integration, remove freely
-  existing_instances=$(count_cls Yad)
-
-  yad --no-buttons --skip-taskbar --no-focus --posx=$left --posy=$top --image \
-    "/tmp/mpdcover-0.png" --image-on-top --title=mpdcover &
-
-  until [[ $(count_cls Yad) -gt $existing_instances ]]; do sleep .1; done
-  window_id=$(wmctrl -lx | grep "$cls" | awk '{print $1}' | tail -1)
-  mkdir -p /tmp/tamwm/
-  echo $window_id > /tmp/tamwm/WID_Yad
+find_cover_image() {
+    album="$(mpc --format %album% current)"
+    file="$(mpc --format %file% current)"
+    album_dir="${file%/*}"
+    [ -z "$album_dir" ] && exit 1
+    album_dir="$music_library/$album_dir"
+    covers="$(find "$album_dir" -type d -exec find {} -maxdepth 1 -type f \
+    -iregex ".*/.*\(${album}\|cover\|folder\|artwork\|front\).*[.]\\(jpe?g\|png\|gif\|bmp\)" \; )"
+    src="$(echo "$covers" | head -n1)"
+    [ -z "$src" ] && src=$fallback
 }
 
-close_cover_windows_down_to() {
-  while [[ $(wmctrl -l | grep mpdcover | wc -l) -gt $1 ]]
-  do xdotool search --name mpdcover windowkill; done
-}
+display_cover_image() {
+    unset LINES COLUMNS
+    term_lines=$(tput lines)
+    term_cols=$(tput cols)
 
-adjust_window() {
-  while sleep 2; do
-    get_ncmpcpp_geometry
-    get_current_cover_geometry
-
-    if has_ncmpcpp_been_quit; then
-      close_cover_windows_down_to 0
-      exit
+    if [ -z "$font_height" ] || [ -z "$font_height" ]; then
+        guess_font_size
     fi
 
-    if has_ncmpcpp_been_moved; then
-      xdotool search --name mpdcover windowmove $left $top
+    ueber_height=$(( term_lines - padding_top - padding_bottom ))
+    ueber_width=$(( ueber_height * font_height / font_width ))
+    ueber_left=$(( term_cols - ueber_width - padding_right ))
+
+    if [ "$ueber_left" -lt "$reserved_playlist_cols" ]; then
+        ueber_left=$reserved_playlist_cols
+        ueber_width=$(( term_cols - reserved_playlist_cols - padding_right ))
     fi
 
-    if has_ncmpcpp_been_resized; then
-      close_cover_windows_down_to 0
-      make_cover_window
-    fi
-  done
+    send_to_ueberzug \
+        action "add" \
+        identifier "mpd_cover" \
+        path "$src" \
+        x "$ueber_left" \
+        y "$padding_top" \
+        height "$ueber_height" \
+        width "$ueber_width" \
+        synchronously_draw "True" \
+        scaler "forced_cover" \
+        scaling_position_x "0.5"
 }
 
-get_ncmpcpp_geometry() {
-  ncmpcpp_geometry=$(xdotool search --name ncmpcpp getwindowgeometry | \
-    tr '\n' ' ' | sed -e 's/[^0-9]/ /g' -e 's/^ *//g' -e 's/ *$//g' | tr -s ' ')
-  ncmpcpp_left="$(cut -d' ' -f2 <<< "$ncmpcpp_geometry")"
-  ncmpcpp_top="$(cut -d' ' -f3 <<< "$ncmpcpp_geometry")"
-  ncmpcpp_width="$(cut -d' ' -f5 <<< "$ncmpcpp_geometry")"
-  ncmpcpp_height="$(cut -d' ' -f6 <<< "$ncmpcpp_geometry")"
-  side=$(($ncmpcpp_height-$margin_top-$margin_bottom))
-  top=$(($ncmpcpp_top+$margin_top))
-  left=$(($ncmpcpp_left+$ncmpcpp_width-$side-$margin_right))
+detect_window_resizes() {
+    {
+        trap 'display_cover_image' WINCH
+        while :; do sleep .1; done
+    } &
 }
 
-setup_files() {
-  album="$(mpc --format %album% current)"
-  file="$(mpc --format %file% current)"
-  album_dir="${file%/*}"
-  [[ -z "$album_dir" ]] && exit 1
-  album_dir="$music_dir/$album_dir"
-  covers="$(find "$album_dir" -type d -exec find {} -maxdepth 1 -type f \
-    \-iregex ".*/.*\(${album}\|cover\|folder\|artwork\|front\).*[.]\\(jpe?g\|png\|gif\|bmp\)" \; )"
-  src="$(echo -n "$covers" | head -n1)"
-  [[ -z "$src" ]] && src=$fallback
+guess_font_size() {
+    term_width=$(wmctrl -lG | awk '$8 == "ncmpcpp" {print $5; exit}')
+    term_height=$(wmctrl -lG | awk '$8 == "ncmpcpp" {print $6; exit}')
+
+    approx_font_width=$(( term_width / term_cols ))
+    approx_font_height=$(( term_height / term_lines ))
+
+    term_xpadding=$(( ( - approx_font_width * term_cols + term_width ) / 2 ))
+    term_ypadding=$(( ( - approx_font_height * term_lines + term_height ) / 2 ))
+
+    font_width=$(( (term_width - 2 * term_xpadding) / term_cols ))
+    font_height=$(( (term_height - 2 * term_ypadding) / term_lines ))
 }
 
-clean_up_tmp() {
-  rm -f /tmp/mpdcover*
+send_to_ueberzug() {
+    old_IFS="$IFS"; IFS="$(printf "\t")"
+    echo "$*" > "$FIFO_UEBERZUG"
+    IFS=${old_IFS}
 }
 
-scale_cover() {
-  foo=$(($side+1))
-  convert "$src" -scale "$foo"x"$foo"^ -crop "$side"x"$side" "/tmp/mpdcover.png"
-}
-
-round_cover_corners() {
-  if [[ $rounding -gt 0 ]]; then
-    convert -size "$side"x"$side" xc:none -draw "roundrectangle 0,0,\
-      $side,$side,$rounding,$rounding" png:- | convert /tmp/mpdcover-0.png \
-      -matte - -compose DstIn -composite /tmp/mpdcover-0.png
-  fi
-}
-
-get_current_cover_geometry() {
-  cover_geometry=$(xdotool search --name "mpdcover" getwindowgeometry|tr\
-    '\n' ' ' | sed -e 's/[^0-9]/ /g' -e 's/^ *//g' -e 's/ *$//g' | tr -s ' ')
-  cover_left="$(cut -d' ' -f2 <<< "$cover_geometry")"
-  cover_top="$(cut -d' ' -f3 <<< "$cover_geometry")"
-  cover_side=$(($(cut -d' ' -f5 <<< "$cover_geometry")-8))
-}
-
-has_ncmpcpp_been_moved() {
-  [[ $top != $cover_top || $left != $cover_left ]]
-}
-
-has_ncmpcpp_been_resized() {
-  [[ $side != $cover_side ]]
-}
-
-has_ncmpcpp_been_quit() {
-  [[ ! $(wmctrl -lx | awk '{print $5}') =~ ncmpcpp ]]
-}
-
-count_cls() {
-    wmctrl -lx | cut -d' ' -f4 | grep -c "$1"
-}
-
-[[ "${BASH_SOURCE[0]}" == "$0" ]] && main "$@"
+main >/dev/null 2>&1

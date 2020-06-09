@@ -20,6 +20,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'} " intellisense / VSCode features
 Plug 'KabbAmine/vCoolor.vim' " color picker
 Plug 'andymass/vim-matchup' " extends % to syntax, hl {} TODO: learn more about
 Plug 'easymotion/vim-easymotion' " label-style jumps
+Plug 'justinmk/vim-sneak'
 Plug 'jiangmiao/auto-pairs' " autoindent and closing brace on {<CR>
 Plug 'xolox/vim-session' " Session manager / automatically open buffers
   Plug 'xolox/vim-misc' " Dependency for vim-session
@@ -78,7 +79,6 @@ nnoremap <leader>p "+p
 nnoremap <leader>P "+P
 vnoremap <leader>p "+p
 vnoremap <leader>P "+P
-inoremap <c-v> <esc>:set paste<cr>a<c-r>=getreg('+')<cr><esc>:set nopaste<cr>mi`[=`]`ia
 
 " MINOR TWEAKS
 " ############
@@ -98,6 +98,21 @@ vnoremap c <esc>v
 
 " PLUGIN MAPPINGS
 " ###############
+" 2-character Sneak (default)
+nmap <BS> <Plug>Sneak_s
+nmap  <Plug>Sneak_S
+" visual-mode
+xmap <BS> <Plug>Sneak_s
+xmap  <Plug>Sneak_S
+" operator-pending-mode
+omap <BS> <Plug>Sneak_s
+omap  <Plug>Sneak_S
+
+nnoremap s s
+nnoremap S S
+xnoremap s s
+onoremap s s
+onoremap S S
 
 map <C-n> :NERDTreeToggle<CR>
 
@@ -397,5 +412,5 @@ let g:gruvbox_contrast_light = 'hard'
 set t_ZH=^[[3m
 set t_ZR=^[[23
 colorscheme noelle
-highlight HighlightedyankRegion guibg=#FFD297
-highlight Visual guibg=#FFE497 gui=none
+"highlight HighlightedyankRegion guibg=#FFD297
+"highlight Visual guibg=#FFE497 gui=none

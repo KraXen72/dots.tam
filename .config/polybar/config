@@ -1,21 +1,22 @@
 [colors]
-background = #f4fffcfd
+background = #fffcfd
 foreground = #250E07
 cpu = #E7A09E
 ram = #92AED7
 time = #F2D06D
 
 [bar/tam]
-width = 99%
-height = 18
-offset-x = .5%
-offset-y = .7%
+/*width = 99%*/
+/*height = 18*/
+height = 17
+/*offset-x = .5%*/
+/*offset-y = .7%*/
 fixed-center = true
 background = ${colors.background}
 foreground = ${colors.foreground}
 line-size = 3
 line-color = #f00
-font-0 = azukifontB:pixelsize=9;1
+font-0 = azukifontB:pixelsize=9;2
 padding = 4
 modules-left = temp pad pad desktops
 modules-center = polywins
@@ -42,7 +43,7 @@ interval = .2
 format-prefix-foreground: #000000
 type = custom/script
 exec =  ~/.config/polybar/scripts/temp.sh
-format-underline = ${colors.time}
+/*format-underline = ${colors.time}*/
 interval=.2
 click-middle = ~/.config/polybar/scripts/redtoggle.sh
 click-left = ~/.config/polybar/scripts/redtoggle.sh
@@ -56,14 +57,14 @@ content = "  "
 type = internal/cpu
 interval = 2
 format-prefix-foreground = ${colors.foreground}
-format-underline = ${colors.cpu}
+/*format-underline = ${colors.cpu}*/
 label = " %percentage:2%% "
 
 [module/memory]
 type = internal/memory
 interval = 2
 format-prefix-foreground = ${colors.foreground}
-format-underline = ${colors.ram}
+/*format-underline = ${colors.ram}*/
 label = " %percentage_used%% "
 
 [module/date]
@@ -71,7 +72,7 @@ type = internal/date
 date-alt = "%Y-%m-%d %a"
 time = "%I:%M %p "
 time-alt = %H:%M
-format-underline = ${colors.time}
+/*format-underline = ${colors.time}*/
 label = %date% %time%
 
 [settings]
