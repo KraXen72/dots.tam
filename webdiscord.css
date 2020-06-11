@@ -1,0 +1,287 @@
+/*  NOERU by tam/alnj
+ *  Light Discord theme for the web client
+ *  Preview: https://u.teknik.io/w0BXN.png
+ *  Support: kokone at takat dot su
+ */
+
+:root {
+    --my-font: azukifontB; /* Font DL: http://azukifont.com/font/azuki.html */
+    
+    /* Basic colors */
+    --black: #250E07;
+    --black-l1: hsl(14, 20%, 40%);
+    --white: #fffcfd;
+    --white-d1: #f6f2f1;
+    --white-d2: #F8EFEE;
+    --red: #C97270;
+    --red-l1: #ECC3C2;
+    --red-d1: #a30003;
+    --yellow: #F2CC60;
+    --yellow-l1: #ffe597;
+    --yellow-l2: #ffeebd;
+    --blue: #d0d9e7;
+    
+    /* Variables used by Discord's stylesheet */
+    --background-primary: var(--white);
+    --background-secondary: var(--white);
+    --background-tertiary: var(--white);
+    --background-secondary-alt: var(--white);
+    --background-mentioned: var(--white-d1);
+    --elevation-low: none; 
+    --channeltextarea-background: var(--white-d1);
+    --background-accent: var(--white-d1);
+    
+    /* Variables used by this stylesheet */
+    --text-normal: var(--black);
+    
+    --embed-border: var(--red-l1);
+    --embed-bg: var(--white-d1);
+    
+    --mentioned-border: var(--red);
+    --mention-bg: var(--yellow-l2);
+    
+    --new-msg-marker: var(--red);
+
+    --headers: var(--red-d1);
+    --headers-bg: var(--yellow-l1);
+    
+    --code-bg: var(--white-d1);
+    
+    --new-message-bar-bg: var(--white-d1);
+    --new-message-bar-fg: var(--black-l1);
+}
+
+
+
+/* Chat
+ *******/
+
+/* Make all username colors readable on light theme (also applies to userlist) */
+span[class*='username'], span[class*='roleColor'] {
+    filter: brightness(0.6);
+}
+
+/* People's names when they are mentioned */
+span[class*='mention'] {
+    color: var(--text-normal);
+    background: var(--mention-bg) !important;
+}
+
+/* Message in which someone mentions you */
+div[class*='mentioned']:before {
+    background-color: var(--mentioned-border);
+}
+
+/* Embeds */
+div[class*='embedWrapper'] {
+    border-color: var(--embed-border) !important;
+    background-color: var(--embed-bg);
+}
+
+/* Code blocks */
+code {
+    background: var(--code-bg) !important;
+}
+
+/* Message input field buttons */
+div[class*='channelTextArea'] div[class*='buttons'] {
+    margin-right: 5px;
+}
+
+/* "Jump to present" bottom bar */
+div[class*='jumpToPresent'] {
+    opacity: 1;
+}
+
+/* "New message" top bar */ 
+div[class*='newMessagesBar'] {
+    border-radius:  8px;
+    background-color: var(--new-message-bar-bg);
+    color: var(--text-normal) !important;
+}
+button[class*='barButton'] {
+    color: var(--new-message-bar-fg) !important;
+}
+main[class*='chatContent'] > div[class*='messagesWrapper'] >
+div[class*='scrollerWrap'] {
+    margin-top: 27px;
+}
+
+/* Unread marker */
+span[class*='unreadPill'] {
+    background-color: var(--new-msg-marker);
+}
+div[class*='isUnread'] {
+    border-color: var(--new-msg-marker);
+    border-style: dotted;
+    margin-left: 35px !important;
+    margin-right: 35px !important;
+}
+path[class*='unreadPillCapStroke'] {
+    color: var(--new-msg-marker);
+    fill: var(--new-msg-marker);
+}
+
+/* Timestamps only appear on hover */
+[class*="timestamp-"] span {
+    opacity: 0;
+    transition: .3s;
+}
+div[id*=messages] [class*="timestamp-"] span:hover {
+    opacity: 1 !important;
+}
+
+
+
+/* Userlist
+ ***********/
+
+/* Ranks */
+h2[class*='membersGroup'] span {
+    flex: none;
+    font-family: var(--my-font);
+    font-size: 12pt !important;
+    color: var(--headers);
+}
+
+div[id*='members'] h2[class*='membersGroup'] {
+    margin-bottom: 7px;
+}
+
+/* User names */
+div[class*='member'] div[class*='layout'] {
+    height: 32px;
+}
+div[class*='membersWrap'] div[class*='scrollerWrap'] div[class*='avatar'],
+div[class*='membersWrap'] div[class*='scrollerWrap']  div[class*='avatar'] svg  {
+    height: 26px;
+    width: 26px;
+    left: 10px;
+    top: 3px;
+}
+div[class*='member'] div[class*='subText'] { /* No statuses */
+    display: none;
+}
+
+/* Userlist header */
+div[class*="scroller"] > div[id*=members]::before {
+    content:" ";
+    display: block;
+    margin-left:90px;
+    margin-top: 10px;
+    margin-bottom: -10px;
+    --size: 70px;
+    width: var(--size);
+    height: var(--size);
+    background-size: var(--size) var(--size);
+
+    /* (base64 image declared at the bottom of this stylesheet) */
+    background-image: var(--userlist-header);
+}
+
+
+
+/* Channel list
+ ***************/
+
+/* Server name */
+header[class*='header'] h1[class*='name'] {
+    flex: none;
+    padding: 1px 5px;
+    font-family: var(--my-font);
+    font-size: 15pt;
+    text-transform: uppercase;
+    letter-spacing: 1pt;
+    color: var(--headers);
+    background-color: var(--headers-bg);
+}
+
+/* Nitro icon */
+div[class*='guildIconContainer'] {
+    display: none;
+}
+
+/* Channel categories */
+h2[class*='name'] {
+    flex: none;
+    font-family: var(--my-font);
+    font-size: 12pt !important;
+    color: var(--headers);
+}
+
+ /* Channel names */
+#channels div[class*='content'] {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* Current channel */
+div[class*='modeSelected'] div[class*='content'] {
+    background: none;
+}
+div[class*='modeSelected'] div[class*='content'] div[class*='name'] {
+    flex: none;
+    background-color: var(--headers-bg);
+    padding: 1px 5px;
+    z-index: -1
+}
+
+/* "Unread channel" dot */
+#channels div[class*='unread'] {
+    display: none;
+}
+
+
+
+/*  Server list
+ *****************/
+
+/* Separator between Discord icon and server list */
+div[class*='guildSeparator'] {
+    display: none;
+}
+
+/* Server list block */
+div[aria-label='Servers']{
+    margin-top: -10px;
+}
+
+/* Server icons */
+div[aria-label='Servers'] div[class*='pill'], div[class*='blobContainer'], 
+div[class*='blobContainer'] div[class*='wrapper'], div[class*='blobContainer'] svg{
+    height: 36px
+}
+
+/* Fix server icon alignment */
+div[aria-label='Servers'] div[class*='listItem']  {
+    width: 60px !important;
+}
+div[class*='tutorialContainer'] div[class*='listItem'] {
+    width: 32px !important;
+    margin-left: 4px;
+}
+
+/* Make server icons duller until hovered */
+nav[class*='guilds'] {
+    filter: grayscale(.7);
+    opacity: .9;
+    transition: .5s;
+}
+nav[class*='guilds']:hover {
+    filter: grayscale(0);
+    opacity: 1;
+}
+
+
+
+/* Image on top of userlist
+ ***************************/
+
+/* Discord prevents external images being loaded
+ * We must use https://www.base64-image.de/
+ */
+
+:root {
+    --userlist-header: url('data:image/png;base64,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');
+}
+
