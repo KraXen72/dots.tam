@@ -18,4 +18,5 @@ xset dpms 0 0 0 &
 xset s off &
 sxhkd &
 pkill mpd
-(while true; do /home/sensei/desktop/picom/build/src/picom -c --corner-radius 5; done) &
+setxkbmap us
+~/coding/picom/picom/build/src/picom -c --corner-radius 5 &

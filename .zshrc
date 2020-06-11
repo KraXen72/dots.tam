@@ -22,10 +22,11 @@ alias wp='feh --bg-scale'
 alias rb='obsession-exit -r'
 alias po='obsession-exit -p'
 alias cmk="setxkbmap us -model pc105angle -variant cmk_ed_dh; xmodmap -e 'keycode 56 = backslash bar'; xmodmap -e 'keycode 54 = d D'; xmodmap -e 'keycode 56 = backslash bar'; xmodmap -e 'keycode 55 = v V'; xmodmap -e 'keycode 56 = backslash bar'; xmodmap -e 'keycode 55 = v V'; xmodmap -e 'keycode 43 = m'; xmodmap -e 'keycode 57 = k'"
-alias gb="setxkbmap gb -model pc105;"
+alias gb="setxkbmap us"
 alias caps="~/bash_scripts/layout.sh"
 alias insl='sudo apt install'
 alias htop='~/stuff/htop/htop'
+alias phicom='~/coding/picom/picom/build/src/picom -c --corner-radius 5 &'
 
 o() { "$@" > /dev/null 2>&1 & disown }
 
@@ -37,3 +38,10 @@ wid(){
 parent() {
     slop -n 0 -f "%i"
 }
+
+mir() {
+    o feh --scale-down --auto-zoom -B "#ededed" ~/pictures/kle-miryoku-keycodes.png
+    sleep .2
+    tamwm -s 4
+}
+

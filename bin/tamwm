@@ -86,7 +86,7 @@ launch_app() {
     vim2|nvim2|code2)
         cls=$tml_cls
         new_cls="vim_two"
-        cmd() { $tml -e sh -c \
+        cmd() { $tml -d 175 63 -e sh -c \
                 "NVIM_LISTEN_ADDRESS=/tmp/nvimsocket2 \
                 vim -c 'OpenSession large'; exec zsh"; }
         after_cmds() { move_window_to_preset -t "1" 1
@@ -144,11 +144,21 @@ move_window_to_preset() {
         esac
     done
 
+    screen_w=$(wmctrl -d | awk -F"[ x]" 'NR==1{print $5}')
+    screen_h=$(wmctrl -d | awk -F"[ x]" 'NR==1{print $6}')
+    pad_top=18 # this is the bar length
+    term_padding=9
+    font_width=7
+    font_height=16
+    min_term_cols=86
+    
+    gaps=17
     top()         { y=36; }
     left()        { x=14;  }
     full_height() { h=1026; }
     vim_two_pos() { top; left; w=1243; full_height; }
     eighty_six_cols() { w=627; }
+    left_slave()  { eighty_six_cols;  }
     right_slave() { x=1919; eighty_six_cols; }
     irc_pos()     { right_slave; y=36; h=386; }
     ncmpcpp_pos() { right_slave; y=444; h=242; }
@@ -158,7 +168,7 @@ move_window_to_preset() {
     0) # first workspace/layout
         case "$1" in
         1) top; left; eighty_six_cols; full_height ;;
-        2) top; x=677;  w=1206; 86_cols ;;
+        2) top; x=655;  w=1250; 86_cols ;;
         3) irc_pos ;;
         4) ncmpcpp_pos ;;
         5) ranger_pos ;;
@@ -203,13 +213,13 @@ dgoto() {
     *)    destination="$1"
     esac
 
-    if [ "$destination" = "0" ] || [ "$destination" = "1" ]; then
-        feh --bg-tile ~/pictures/solidbeige2.gif
-    fi
+#    if [ "$destination" = "0" ] || [ "$destination" = "1" ]; then
+        #feh --bg-tile ~/pictures/solidbeige2.gif
+    #fi
 
-    if [ "$destination" = "2" ] || [ "$destination" = "3" ]; then
-        feh --no-fehbg --bg-scale ~/pictures/Wallpapers/main.jpg
-    fi
+    #if [ "$destination" = "2" ] || [ "$destination" = "3" ]; then
+        #feh --no-fehbg --bg-scale ~/pictures/Wallpapers/main.jpg
+    #fi
 
     switch_to_dtop "$destination"
 
@@ -233,23 +243,26 @@ openbox_actions() {
 }
 
 position_window() {
-    while getopts "i:x:y:w:h:" opt; do
+    unset relativemove relativesize
+    while getopts "i:x:y:w:h:ms" opt; do
         case "${opt}" in
         i) id="$OPTARG" ;;
         x) x="$OPTARG" ;;
         y) y="$OPTARG" ;;
         w) width="$OPTARG" ;;
         h) height="$OPTARG" ;;
+        m) relativemove="--relative";;
+        s) relativesize="--relative";;
         *) echo "invalid options (ixywh)";;
         esac
     done
 
     if [ -n "$x" ] || [ -n "$y" ]; then
-        xdotool windowmove "$id" "$x" "$y"
+        xdotool windowmove $relativemove "$id" "$x" "$y"
     fi
 
     if [ -n "$width" ] || [ -n "$height" ]; then
-        xdotool windowsize "$id" "$width" "$height"
+        xdotool windowsize $relativesize "$id" "$width" "$height"
     fi
 
     unset id x y width height
@@ -258,6 +271,47 @@ position_window() {
 # ==== Desktop management
 switch_to_dtop() {
     active_window=$(active_window)
+    active_dtop=$(active_dtop)
+    read -r irc_wid </tmp/tamwm/WID_irc
+    read -r ncmpcpp_wid </tmp/tamwm/WID_ncmpcpp
+    read -r ranger_wid </tmp/tamwm/WID_ranger
+    read -r vivaldi_wid </tmp/tamwm/WID_vivaldi
+    read -r vim_one_wid </tmp/tamwm/WID_vim_one
+    read -r vim_two_wid </tmp/tamwm/WID_vim_two
+    case $active_dtop in 
+        0)
+            if [ $1 != 0 ]; then
+                position_window -m -x 00 -y 1000 -i $vim_one_wid
+            fi
+            if [ $1 != 0 ] && [ $1 != 2 ]; then
+                position_window -m -x 0 -y -500 -i $irc_wid
+                position_window -m -x 800 -y 0 -i $ncmpcpp_wid
+                position_window -m -x 0 -y 500 -i $ranger_wid
+            fi
+            if [ $1 != 0 ] && [ $1 != 1 ]; then
+                position_window -m -x 0 -y -1000 -i $vivaldi_wid
+            fi
+            ;;
+        1)
+            if [ $1 != 2 ] && [ $1 != 1 ]; then
+                position_window -m -x -1600 -y 0 -i $vim_two_wid
+            fi
+            if [ $1 != 0 ] && [ $1 != 1 ]; then
+                position_window -m -x 0 -y -1000 -i $vivaldi_wid
+            fi
+            ;;
+        2)
+            if [ $1 != 2 ] && [ $1 != 1 ]; then
+                position_window -m -x -1600 -y 0 -i $vim_two_wid
+            fi
+            if [ $1 != 0 ] && [ $1 != 2 ]; then
+                position_window -m -x 0 -y -500 -i $irc_wid
+                position_window -m -x 800 -y 0 -i $ncmpcpp_wid
+                position_window -m -x 0 -y 500 -i $ranger_wid
+            fi
+            ;;
+    esac
+    sleep .15
     apply_layout "$1"
     wmctrl -s "$1"
     sleep .2
@@ -271,19 +325,17 @@ apply_layout() {
         0)
         send_to_dtop -p "3" irc &
         send_to_dtop -p "4" ncmpcpp &
-        send_to_dtop Yad &
         send_to_dtop -p "5" ranger &
         send_to_dtop -p "1" vim_one &
         send_to_dtop -p "2" vivaldi &
         ;;
         1)
-        send_to_dtop -p "1" vim_two &
         send_to_dtop -p "2" vivaldi &
+        send_to_dtop -p "1" vim_two &
         ;;
         2)
         send_to_dtop -p "3" irc &
         send_to_dtop -p "4" ncmpcpp &
-        send_to_dtop Yad &
         send_to_dtop -p "5" ranger &
         send_to_dtop -p "1" vim_two &
         ;;

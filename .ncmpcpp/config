@@ -27,8 +27,10 @@ execute_on_song_change="~/.ncmpcpp/ncmpcpp_cover_art.sh"
 
 song_list_format = "$6{%a »$4 %t $/r$/u$R$b$1%l$/b  }|{%f$/r}"
 now_playing_prefix = "$b$6 »» "
-/*now_playing_suffix = "$/b"*/
+now_playing_suffix = "$/b"
+/*now_playing_suffix = " >>>>"*/
 playlist_display_mode = "classic"
+
 
 #### Progressbar
 #### can consider »─▬▐▌░▒▓█━⠤ ⠤ ▪▃
@@ -37,7 +39,7 @@ progressbar_elapsed_color = "white"
 progressbar_color = "black"
 connected_message_on_startup = no
 
-song_columns_list_format = "(40)[6]{a} (50)[4]{t} $b(10)[9]{l}$/b"
+song_columns_list_format = "(50)[6]{a} (50)[4]{tr} $b(5f)[9]{lr}$/b"
 #song_columns_list_format = "(25)[6]{a} (25)[4]{tr} (5)[6]{lr:Length}"
 
 #### Colors
@@ -70,21 +72,36 @@ mpd_crossfade_time = "0"
 follow_now_playing_lyrics = "yes"
 store_lyrics_in_song_dir = "yes"
 song_window_title_format = ncmpcpp
+ask_before_clearing_playlists = "no"
+volume_change_step = "1"
 
 #### Mappings
-def_key "h" previous_column
-def_key "j" scroll_down
-def_key "k" scroll_up
-def_key "l" next_column
-def_key "ctrl-u" page_up
-def_key "ctrl-d" page_down
-def_key "." show_lyrics
-def_key "n" next_found_item
-def_key "N" previous_found_item
-def_key "J" move_sort_order_down
-def_key "K" move_sort_order_up
-def_key "d" delete_playlist_items
-def_key "d" delete_browser_items
+def_key "h"
+    previous_column
+def_key "j"
+    scroll_down
+def_key "k"
+    scroll_up
+def_key "l"
+    next_column
+def_key "ctrl-u"
+    page_up
+def_key "ctrl-d"
+    page_down
+def_key "."
+    show_lyrics
+def_key "n"
+    next_found_item
+def_key "N"
+    previous_found_item
+def_key "J"
+    move_sort_order_down
+def_key "K"
+    move_sort_order_up
+def_key "d"
+    delete_playlist_items
+def_key "d"
+    delete_browser_items
 
 #### Visualizer stuff
 visualizer_type = wave_filled

@@ -14,11 +14,11 @@ height = 17
 fixed-center = true
 background = ${colors.background}
 foreground = ${colors.foreground}
-line-size = 3
+line-size = 2
 line-color = #f00
-font-0 = azukifontB:pixelsize=9;2
+font-0 = azukifontBI:pixelsize=9;2
 padding = 4
-modules-left = temp pad pad desktops
+modules-left = desktops
 modules-center = polywins
 modules-right = cpu pad memory pad pad date
 cursor-click = pointer
@@ -39,16 +39,6 @@ label = %output%
 label-padding = 1
 interval = .2
 
-[module/temp]
-format-prefix-foreground: #000000
-type = custom/script
-exec =  ~/.config/polybar/scripts/temp.sh
-/*format-underline = ${colors.time}*/
-interval=.2
-click-middle = ~/.config/polybar/scripts/redtoggle.sh
-click-left = ~/.config/polybar/scripts/redtoggle.sh
-click-right = ~/.config/polybar/scripts/redtoggle.sh
-
 [module/pad]
 type = custom/text
 content = "  "
@@ -58,14 +48,14 @@ type = internal/cpu
 interval = 2
 format-prefix-foreground = ${colors.foreground}
 /*format-underline = ${colors.cpu}*/
-label = " %percentage:2%% "
+label = "★ %percentage:2%% "
 
 [module/memory]
 type = internal/memory
 interval = 2
 format-prefix-foreground = ${colors.foreground}
 /*format-underline = ${colors.ram}*/
-label = " %percentage_used%% "
+label = "☆ %percentage_used%% "
 
 [module/date]
 type = internal/date
