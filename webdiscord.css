@@ -28,7 +28,7 @@
     --background-tertiary: var(--white);
     --background-secondary-alt: var(--white);
     --background-mentioned: var(--white-d1);
-    --elevation-low: none; 
+    --elevation-low: none;
     --channeltextarea-background: var(--white-d1);
     --background-accent: var(--white-d1);
     
@@ -91,7 +91,7 @@ div[class*='channelTextArea'] div[class*='buttons'] {
 
 /* "Jump to present" bottom bar */
 div[class*='jumpToPresent'] {
-    opacity: 1;
+    :e ~/binopacity: 1;
 }
 
 /* "New message" top bar */ 

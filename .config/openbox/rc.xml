@@ -69,16 +69,16 @@
 
        use obconf if you want to change these without having to log out
        and back in -->
-    <number>4</number>
+    <number>5</number>
     <firstdesk>1</firstdesk>
     <names>
       <name>東</name>
       <name>南</name>
       <name>西</name>
       <name>北</name>
-      <name>test</name>
+      <name>z</name>
     </names>
-    <popupTime>1000</popupTime>
+    <popupTime>0</popupTime>
   </desktops>
   <resize>
     <drawContents>yes</drawContents>

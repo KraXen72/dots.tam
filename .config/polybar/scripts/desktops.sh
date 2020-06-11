@@ -13,7 +13,7 @@ active_left_rs_off="%{F$color0}%{B$color4}%{u$color4} "
 active_right_rs_off=" %{-u}%{B-}%{F-}"
 
 
-inactive_left="%{F$color0}"
+inactive_left="%{F$color0} "
 inactive_right=" %{F-}"
 
 ps -C redshift | grep -o redshift &>/dev/null && redshift_status=1
@@ -27,6 +27,8 @@ dtops=$(wmctrl -d|awk -vORS="" -vOFS="" -v active_dtop="$active_dtop" -v active_
             } else {
                 item=alro $10 arro
             }
+        } else if ($10=="z") {
+        next
         } else {
              item=inactive_left $10 inactive_right
         }
@@ -40,7 +42,7 @@ dtops=$(wmctrl -d|awk -vORS="" -vOFS="" -v active_dtop="$active_dtop" -v active_
             print "%{A1:xdotool key super+"$1":}"item"%{A}"
             i = 1
         } else {
-            print " %{A1:xdotool key super+"$1":}"item"%{A}"
+            print "%{A1:xdotool key super+"$1":}"item"%{A}"
         }
         print "%{A}"
     }')

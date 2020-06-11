@@ -71,7 +71,6 @@ launch_app() {
         new_cls="spare"
         read -r irc_id </tmp/tamwm/WID_irc
         cmd() { $tml; }
-        #pre_cmds() { xdotool windowminimize "$irc_id"; }
         after_cmds() { move_window_to_preset 3; }
         ;;
 
@@ -89,8 +88,10 @@ launch_app() {
         cmd() { $tml -d 175 63 -e sh -c \
                 "NVIM_LISTEN_ADDRESS=/tmp/nvimsocket2 \
                 vim -c 'OpenSession large'; exec zsh"; }
-        after_cmds() { move_window_to_preset -t "1" 1
-                       wmctrl -vxr $new_cls -t 1;   };;
+        after_cmds() {
+            move_window_to_preset -t "1" 1
+            xdotool set_desktop_for_window "$window_id" 1
+            } ;;
 
     vim|nvim|code)
         cmd() { launch_app vim2; launch_app vim1; exit; };;
@@ -140,7 +141,7 @@ move_window_to_preset() {
 
     while getopts t: opt; do
         case "$opt" in
-        t) target_dtop="$OPTARG"; shift;;
+        t) target_dtop="$OPTARG"; shift 2;;
         esac
     done
 
@@ -168,7 +169,7 @@ move_window_to_preset() {
     0) # first workspace/layout
         case "$1" in
         1) top; left; eighty_six_cols; full_height ;;
-        2) top; x=655;  w=1250; 86_cols ;;
+        2) top; x=655;  w=1250; full_height;;
         3) irc_pos ;;
         4) ncmpcpp_pos ;;
         5) ranger_pos ;;
@@ -177,7 +178,7 @@ move_window_to_preset() {
     1) # second workspace/layout
         case "$1" in
         1) vim_two_pos ;;
-        2) x=1293; top; w=1253; full_height ;;
+        2) x=1271; top; w=1275; full_height ;;
         esac
         ;;
     2) # third workspace/layout
@@ -198,7 +199,7 @@ move_window_to_preset() {
         read -r target_window </tmp/tamwm/WID_"$2"
     fi
     position_window -x "$x" -y "$y" -w "$w" -h "$h" -i "$target_window"
-    xdotool getactivewindow windowactivate
+    #xdotool getactivewindow windowactivate
     unset x y w h
 }
 
@@ -270,6 +271,7 @@ position_window() {
 
 # ==== Desktop management
 switch_to_dtop() {
+    set +x
     active_window=$(active_window)
     active_dtop=$(active_dtop)
     read -r irc_wid </tmp/tamwm/WID_irc
@@ -278,8 +280,11 @@ switch_to_dtop() {
     read -r vivaldi_wid </tmp/tamwm/WID_vivaldi
     read -r vim_one_wid </tmp/tamwm/WID_vim_one
     read -r vim_two_wid </tmp/tamwm/WID_vim_two
-    case $active_dtop in 
+    case $active_dtop in
         0)
+            if [ $1 = 1 ]; then
+                move_window_to_preset -t 1 2 vivaldi &
+            fi
             if [ $1 != 0 ]; then
                 position_window -m -x 00 -y 1000 -i $vim_one_wid
             fi
@@ -293,6 +298,9 @@ switch_to_dtop() {
             fi
             ;;
         1)
+            if [ $1 = 0 ]; then
+                move_window_to_preset -t 0 2 vivaldi &
+            fi
             if [ $1 != 2 ] && [ $1 != 1 ]; then
                 position_window -m -x -1600 -y 0 -i $vim_two_wid
             fi
@@ -311,7 +319,7 @@ switch_to_dtop() {
             fi
             ;;
     esac
-    sleep .15
+    sleep .1
     apply_layout "$1"
     wmctrl -s "$1"
     sleep .2
@@ -323,6 +331,7 @@ apply_layout() {
 
     case $target_layout in
         0)
+        send_to_dtop -g vim_two &
         send_to_dtop -p "3" irc &
         send_to_dtop -p "4" ncmpcpp &
         send_to_dtop -p "5" ranger &
@@ -330,35 +339,60 @@ apply_layout() {
         send_to_dtop -p "2" vivaldi &
         ;;
         1)
+        send_to_dtop -g irc &
+        send_to_dtop -g ncmpcpp &
+        send_to_dtop -g ranger &
+        send_to_dtop -g vim_one &
+        move_window_to_preset -t 1 2 vivaldi &
         send_to_dtop -p "2" vivaldi &
         send_to_dtop -p "1" vim_two &
         ;;
         2)
+        send_to_dtop -g vivaldi &
+        send_to_dtop -g vim_one &
         send_to_dtop -p "3" irc &
         send_to_dtop -p "4" ncmpcpp &
         send_to_dtop -p "5" ranger &
         send_to_dtop -p "1" vim_two &
         ;;
+        3)
+        send_to_dtop -g vivaldi &
+        send_to_dtop -g vim_one &
+        send_to_dtop -g irc &
+        send_to_dtop -g ncmpcpp &
+        send_to_dtop -g ranger &
+        send_to_dtop -g vim_two &
+        ;;
     esac
 }
 
 send_to_dtop() {
-    while getopts p: opt; do
+    unset target_layout
+    while getopts p:st:g opt; do
         case "$opt" in
         p) target_pos="$OPTARG" ;;
+        s) target_layout="4294967295";;
+        g) target_layout="$(garbage_dtop)";;
+        t) target_layout="$OPTARG";;
         *) ;;
         esac
     done
     shift $(( OPTIND - 1 ))
 
-    [ -z "$target_layout" ] && target_layout=$(active_dtop)
+    #[ -z "$target_layout" ] && target_layout=$(active_dtop)
+    [ -z "$target_layout" ] && target_layout="4294967295"
 
     read -r window_id </tmp/tamwm/WID_"$1"
+
     xdotool set_desktop_for_window "$window_id" "$target_layout"
     xdotool set_desktop_for_window "$window_id" "$target_layout"
-    xdotool windowactivate "$window_id"
-    xdotool windowactivate "$window_id"
-    move_window_to_preset "$target_pos" "$1"
+    if [ "$target_layout" != "$(garbage_dtop)" ]; then
+        xdotool windowactivate "$window_id"
+        xdotool windowactivate "$window_id"
+    fi
+    if [ -n target_pos ]; then
+        move_window_to_preset "$target_pos" "$1"
+    fi
 }
 
 # === Misc
@@ -371,6 +405,10 @@ active_window() {
 }
 
 last_dtop() {
+    wmctrl -d | awk 'END {print $1-1}'
+}
+
+garbage_dtop() {
     wmctrl -d | awk 'END {print $1}'
 }
 
