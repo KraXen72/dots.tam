@@ -175,9 +175,6 @@
         </finalactions>
       </action>
     </keybind>
-    <keybind key="W-S-r">
-      <action name="Restart"/>
-    </keybind>
   </keyboard>
   <mouse>
     <dragThreshold>1</dragThreshold>
@@ -368,14 +365,14 @@
       <mousebind button="Up" action="Click">
         <action name="Execute">
           <command>
-            tamwm -d dnext
+            tamwm -d next
           </command>
         </action>
       </mousebind>
       <mousebind button="Down" action="Click">
         <action name="Execute">
           <command>
-            tamwm -d dprev
+            tamwm -d prev
           </command>
         </action>
       </mousebind>

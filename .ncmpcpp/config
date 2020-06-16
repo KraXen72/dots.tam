@@ -39,7 +39,7 @@ progressbar_elapsed_color = "white"
 progressbar_color = "black"
 connected_message_on_startup = no
 
-song_columns_list_format = "(50)[6]{a} (50)[4]{tr} $b(5f)[9]{lr}$/b"
+song_columns_list_format = "(50)[6]{t} (50)[4]{ar} $b(5f)[9]{lr}$/b"
 #song_columns_list_format = "(25)[6]{a} (25)[4]{tr} (5)[6]{lr:Length}"
 
 #### Colors
@@ -118,3 +118,7 @@ startup_slave_screen_focus = yes
 startup_slave_screen = playlist
 locked_screen_width_part = 30
 
+window_border_color = green
+active_window_border = blue
+
+browser_display_mode = columns

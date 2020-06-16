@@ -1,46 +1,43 @@
 # Iconize (minimize) window // Close window w/ Picom flicker workaround
-super + {g,x}
+super + {v,b}
     {xdotool getactivewindow windowminimize,tamwm -x}
 
+super + g
+    wmctrl -r :ACTIVE: -b toggle,maximized_vert,maximized_horz; sleep .2; xdotool getactivewindow windowactivate
+
 # Launcher
-super + r
+super + a
     gmrun
 
 # Screenshots
-super + s
+super + z
     scrot && dunstify -r 1 "Screenshot taken."
 
-super + shift + @s
+super + shift + @z
     scrot -s && dunstify -r 1 "Screenshot taken."
 
 # run or raise (workaround atm)
-super + {w,b,t,f}
-    app={irc,ncmpcpp,ranger,vivaldi} && jumpapp -f -c "$app" tamwm -l $app
-
-super + c
-    jumpapp -f -c "vim" tamwm -l vim
+super + {p,t,d,s,r,w,b}
+    app={irc,ncmpcpp,ranger,vivaldi,vim_one,vim_two,spare} && jumpapp -f -c "$app" tamwm -l $app
 
 super + q
     ~/bash_scripts/focus_extra.sh
 
-# More run or raise
-super + shift + {w}
-    {jumpapp -f -c "spare" tamwm -l spare}
-
 super + {h,l}
     tamwm -d {prev,next}
+
+super + {n,e,i,o}
+    tamwm -d {0-3}
 
 super + {1-4}
     tamwm -d {0-3}
 
-super + shift + {1-5}
-    tamwm -s {1-5}
+super + shift + {r,s,p,t,d,g}
+    tamwm -s {1-6}
 
-ctrl + super +  {1-4}
-    xdotool getactivewindow set_desktop_for_window {0-3}
+super + ctrl + {1-4}
+    xdotool getactivewindow set_desktop_for_window {0-3}; sleep .1; tamwm -d {0-3}
 
 super + Return
     /home/sensei/bash_scripts/init.sh
 
-super + z
-    tamwm -i

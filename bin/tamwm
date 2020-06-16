@@ -77,7 +77,7 @@ launch_app() {
     vim_one|vim1|nvim1|code1)
         cls=$tml_cls
         new_cls="vim_one"
-        cmd() { $tml -e sh -c \
+        cmd() { $tml -d 86 63 -e sh -c \
                 "NVIM_LISTEN_ADDRESS=/tmp/nvimsocket \
                 vim -c 'OpenSession small'; exec zsh"; }
         after_cmds() { move_window_to_preset 1; };;
@@ -145,6 +145,7 @@ move_window_to_preset() {
         esac
     done
 
+    # WORK IN PROGRESS
     screen_w=$(wmctrl -d | awk -F"[ x]" 'NR==1{print $5}')
     screen_h=$(wmctrl -d | awk -F"[ x]" 'NR==1{print $6}')
     pad_top=18 # this is the bar length
@@ -173,6 +174,7 @@ move_window_to_preset() {
         3) irc_pos ;;
         4) ncmpcpp_pos ;;
         5) ranger_pos ;;
+        6) right_slave; full_height; top ;;
         esac
         ;;
     1) # second workspace/layout
@@ -199,7 +201,7 @@ move_window_to_preset() {
         read -r target_window </tmp/tamwm/WID_"$2"
     fi
     position_window -x "$x" -y "$y" -w "$w" -h "$h" -i "$target_window"
-    #xdotool getactivewindow windowactivate
+    xdotool getactivewindow windowactivate
     unset x y w h
 }
 

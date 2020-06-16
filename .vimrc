@@ -29,11 +29,10 @@ Plug 'tpope/vim-repeat' " . repeats plugin operations
 " Seemingly less necessary... for now
 Plug 'preservim/nerdtree' " file explorer
 Plug 'preservim/nerdcommenter' " comment/uncomment binds
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " TODO: learn to use fzf
-Plug 'junegunn/fzf.vim' " TODO: learn to use
-Plug 'zhou13/vim-easyescape' " jk kj = escape, no visual distraction
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " TODO: learn features
+Plug 'junegunn/fzf.vim' " TODO: learn features
 Plug 'michaeljsmith/vim-indent-object' " text object based on indentation
-Plug 'machakann/vim-highlightedyank' " briefly hilight yank when not in vis mode
+Plug 'machakann/vim-highlightedyank' " briefly hilight yank
 
 call plug#end()
 
@@ -55,8 +54,8 @@ nnoremap ,, ,
 nnoremap ,o :Files<cr>
 nnoremap ,b :Buffers<CR>
 nnoremap <leader><Tab> :Buffers<CR>
-nnoremap <silent><Leader><C-x> :bd!<Cr>
-nnoremap <silent><C-x> :bn<bar>:bd!#<CR>
+nnoremap <silent><Leader><C-q> :bd!<Cr>
+nnoremap <silent><C-q> :bn<bar>:bd!#<CR>
 nnoremap <silent>,m :bp<CR>
 nnoremap <silent>,. :bn<CR>
 nmap <Leader>1 <Plug>lightline#bufferline#go(1)
@@ -87,9 +86,12 @@ vnoremap / /\v
 
 nnoremap <CR> o<Esc>
 nnoremap ZZ :wqall<CR>
-nnoremap <silent> <C-S> :update<CR>
-vnoremap <silent> <C-S> <C-C>:update<CR>
-inoremap <silent> <C-S> <C-O>:update<CR><Esc>
+nnoremap <silent> <C-s> :update<CR> 
+vnoremap <silent> <C-s> <C-C>:update<CR>
+inoremap <silent> <C-s> <C-O>:update<CR><Esc>
+nnoremap <silent> <C-p> :update<CR> 
+vnoremap <silent> <C-p> <C-C>:update<CR>
+inoremap <silent> <C-p> <C-O>:update<CR><Esc>
 nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
 nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
 " Refresh when plugins fuck up.

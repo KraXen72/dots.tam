@@ -5,7 +5,6 @@
 #        - multi-workspace matching will prioritize current workspace
 #          TODO: fix get_matching_window_from_list() so that it still switches
 #          workspace if there are several instances on the current one
-#                don't apply layout if already on workspace?
 
 
 show_usage() {
@@ -432,9 +431,25 @@ get_active_workspace() {
 switch_to_target_workspace_with_tamwm() {
   local active_workspace=$(wmctrl -d | grep "*" | cut -d' ' -f1)
   local destination_workspace=$(wmctrl -lx | grep "$1" | awk '{print $2}')
-  if [[ $active_workspace != $destination_workspace ]]; then
+  local garbage_dtop=$(wmctrl -d | awk 'END {print $1}')
+  local actwi=$(printf "0x0%02X" $(xdotool getactivewindow))
+
+  if [[ $destination_workspace == $garbage_dtop ]]; then
+
+      case "$classid" in
+          vivaldi) destination_workspace=0 ;;
+          vim_one) destination_workspace=0;;
+          vim_two) destination_workspace=1;;
+          irc) destination_workspace=0;;
+          ncmpcpp) destination_workspace=0;;
+          ranger) destination_workspace=0;;
+      esac
+  fi
+  if [[ $active_workspace != $destination_workspace ]] &&
+      [[ $destination_workspace != "-1" ]]; then
     tamwm -d "$destination_workspace" &> /dev/null
   fi
+
 }
 
 change_workspace_activate_window() {
