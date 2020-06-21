@@ -101,14 +101,14 @@ vnoremap c <esc>v
 " PLUGIN MAPPINGS
 " ###############
 " 2-character Sneak (default)
-nmap <BS> <Plug>Sneak_s
-nmap  <Plug>Sneak_S
+nmap <Del> <Plug>Sneak_s
+nmap <BS> <Plug>Sneak_S
 " visual-mode
-xmap <BS> <Plug>Sneak_s
-xmap  <Plug>Sneak_S
+xmap <Del> <Plug>Sneak_s
+xmap <BS> <Plug>Sneak_S
 " operator-pending-mode
-omap <BS> <Plug>Sneak_s
-omap  <Plug>Sneak_S
+omap <Del> <Plug>Sneak_s
+omap <BS> <Plug>Sneak_S
 
 nnoremap s s
 nnoremap S S
@@ -200,9 +200,9 @@ set foldlevel=1
 set mouse=a " Mouse support in all modes
 set textwidth=80 " used by autoformatter
 set formatoptions=qn1
-set tabstop=4 " length of real tabs
-set shiftwidth=4 " autoindent step size
-set expandtab " when pressing tabs insert spaces instead
+set tabstop=8 " length of real tabs
+set shiftwidth=8 " autoindent step size
+set noexpandtab " when pressing tabs insert spaces instead
 set softtabstop=4 " number of spaces that is inserted when pressing tab
 set shiftround " autoindent must be rounded to shiftwidth
 set pastetoggle=<F2>

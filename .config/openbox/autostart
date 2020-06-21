@@ -12,8 +12,8 @@ fi
 polybar -r tam &
 dunst &
 setxkbmap -option shift:both_capslock &
-xcape -e 'Shift_R=Return' &
-/home/sensei/bash_scripts/layout.sh &
+#xcape -e 'Shift_R=Return' &
+#/home/sensei/bash_scripts/layout.sh &
 xset dpms 0 0 0 &
 xset s off &
 sxhkd &

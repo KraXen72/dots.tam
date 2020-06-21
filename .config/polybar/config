@@ -17,6 +17,7 @@ foreground = ${colors.foreground}
 line-size = 2
 line-color = #f00
 font-0 = azukifontBI:pixelsize=9;2
+font-1 = siji:pixelsize=9;3
 padding = 4
 modules-left = desktops
 modules-center = polywins
@@ -24,19 +25,26 @@ modules-right = cpu pad memory pad pad date
 cursor-click = pointer
 cursor-scroll = ns-resize
 border-bottom = 7
+/*tray-position = right*/
+/*tray-offset-x = -250*/
+/*tray-background = ${colors.background}*/
+/*tray-maxsize = 14*/
+/*tray-scale = 0.4*/
 
 [module/polywins]
 type = custom/script
-exec = ~/.config/polybar/scripts/polywins.sh
+exec = /home/sensei/.config/polybar/scripts/polywins.sh
 format = <label>
 label-padding = 1
-interval = .2
+tail = true
+/*interval = .2*/
 
 [module/desktops]
 type = custom/script
 exec = ~/.config/polybar/scripts/desktops.sh
 format = <label>
 label = %output%
+label-font= 2
 label-padding = 1
 interval = .2
 

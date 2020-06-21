@@ -34,7 +34,7 @@ playlist_display_mode = "classic"
 
 #### Progressbar
 #### can consider »─▬▐▌░▒▓█━⠤ ⠤ ▪▃
-progressbar_look = "▄▄▄"
+progressbar_look = "ŢŤŤŤţ"
 progressbar_elapsed_color = "white"
 progressbar_color = "black"
 connected_message_on_startup = no
@@ -118,7 +118,6 @@ startup_slave_screen_focus = yes
 startup_slave_screen = playlist
 locked_screen_width_part = 30
 
-window_border_color = green
 active_window_border = blue
 
 browser_display_mode = columns

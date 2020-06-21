@@ -39,7 +39,7 @@ div.button-toolbar.newtab { /* No new tab button. Use Quick Command/CTRL-T, */
 /* TAB CONTAINER */
 #tabs-container.top { /* (when tab position is Top in settings) */
   padding-left: 2px !important;
-  height: 17px !important;
+  height: 16px !important;
   padding-right: 0 !important; /* Tab bar uses entire window width */
   width: calc(100vw - 20px) !important; /* Also needed for entire width */
   padding-top: 0px !important; /* remove Vivaldi useless tab top-padding */
@@ -58,11 +58,11 @@ div.button-toolbar.newtab { /* No new tab button. Use Quick Command/CTRL-T, */
 
 /* INDIVIDUAL TAB STYLING */
 .tab-header { /* [Favicon+Title] within the tab */
-  padding-top: 1px !important; /* Positioning shenanigans */
+  padding-top: 0px !important; /* Positioning shenanigans */
   padding-bottom: 0 !important;
   flex: 0 0 19px !important;
-  font-size: 14px !important;
-  font-family: azukifontB !important;
+  font-size: 10.5pt !important;
+  font-family: azukifontBI !important;
 }
 .tab .favicon { /* Favicon positioning */
   padding: 0 !important;

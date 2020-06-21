@@ -8,6 +8,8 @@
 #    - Apply preset layouts on workspace (desktop) change
 #    - Send a window to a position preset
 
+# TODO: replace workspace switching with xprop -spy -root -notype _NET_CURRENT_DESKTOP to watch for workspace changes?
+
 usage() {
     echo "Usage: tamwm [OPTION] [ARG]
 -l        Launch_app and position a program (args: irc, ncmpcpp, ranger, vim,
@@ -47,7 +49,7 @@ launch_app() {
     irc|weechat)
         cls=$tml_cls
         new_cls="irc"
-        cmd() { $tml -e sh -c 'mosh takat.su -- tmux a'; }
+        cmd() { $tml -e sh -c 'mosh takat.su -- tmux a; exec zsh'; }
         after_cmds() { move_window_to_preset 3; } ;;
 
     ncmpcpp|music)
@@ -189,6 +191,7 @@ move_window_to_preset() {
         3) irc_pos ;;
         4) ncmpcpp_pos ;;
         5) ranger_pos ;;
+        6) right_slave; full_height; top ;;
         esac
         ;;
     *) echo "Use: move_window_to_preset 3 / move_window_to_preset -t 2 1"; exit
