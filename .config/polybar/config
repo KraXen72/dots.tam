@@ -18,8 +18,8 @@ line-size = 2
 line-color = #f00
 font-0 = azukifontBI:pixelsize=9;2
 font-1 = siji:pixelsize=9;3
-padding = 4
-modules-left = desktops
+padding = 1
+modules-left = desktops polynotifs
 modules-center = polywins
 modules-right = cpu pad memory pad pad date
 cursor-click = pointer
@@ -27,9 +27,10 @@ cursor-scroll = ns-resize
 border-bottom = 7
 /*tray-position = right*/
 /*tray-offset-x = -250*/
+/*tray-offset-y = 2*/
 /*tray-background = ${colors.background}*/
-/*tray-maxsize = 14*/
-/*tray-scale = 0.4*/
+/*[>tray-maxsize = <]*/
+/*tray-scale = .8*/
 
 [module/polywins]
 type = custom/script
@@ -37,7 +38,14 @@ exec = /home/sensei/.config/polybar/scripts/polywins.sh
 format = <label>
 label-padding = 1
 tail = true
-/*interval = .2*/
+
+[module/polynotifs]
+type = custom/script
+exec = /home/sensei/coding/polynotifs/notif_historian.sh
+format = <label>
+label-padding = 1
+tail = true
+interval = 0
 
 [module/desktops]
 type = custom/script
@@ -45,7 +53,6 @@ exec = ~/.config/polybar/scripts/desktops.sh
 format = <label>
 label = %output%
 label-font= 2
-label-padding = 1
 interval = .2
 
 [module/pad]
@@ -57,14 +64,14 @@ type = internal/cpu
 interval = 2
 format-prefix-foreground = ${colors.foreground}
 /*format-underline = ${colors.cpu}*/
-label = "★ %percentage:2%% "
+label = "%percentage:2%% ★"
 
 [module/memory]
 type = internal/memory
 interval = 2
 format-prefix-foreground = ${colors.foreground}
 /*format-underline = ${colors.ram}*/
-label = "☆ %percentage_used%% "
+label = "%percentage_used%% ☆"
 
 [module/date]
 type = internal/date
@@ -72,7 +79,7 @@ date-alt = "%Y-%m-%d %a"
 time = "%I:%M %p "
 time-alt = %H:%M
 /*format-underline = ${colors.time}*/
-label = %date% %time%
+label = "%date% %time% ┰"
 
 [settings]
 screenchange-reload = true

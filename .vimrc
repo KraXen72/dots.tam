@@ -44,6 +44,7 @@ let mapleader = "\\"
 " NEW FUNCTIONALITY / HIGH IMPORTANCE QOL
 " #######################################
 
+set clipboard=unnamedplus
 vnoremap r "_dP | " replace selection with yank register
 nnoremap <Space> za | " toggle folds with space
 nnoremap <expr> <leader><space> &foldlevel ? 'zM' :'zR' | " toggle ALL folds

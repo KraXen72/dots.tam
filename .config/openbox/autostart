@@ -16,6 +16,7 @@ setxkbmap -option shift:both_capslock &
 #/home/sensei/bash_scripts/layout.sh &
 xset dpms 0 0 0 &
 xset s off &
+#xinput --set-prop  17 "libinput Accel Speed" -0.85 &
 sxhkd &
 pkill mpd
 setxkbmap us

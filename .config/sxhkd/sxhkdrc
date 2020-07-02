@@ -18,7 +18,7 @@ super + shift + @z
 
 # run or raise (workaround atm)
 super + {p,t,d,s,r,w,b}
-    app={irc,ncmpcpp,ranger,vivaldi,vim_one,vim_two,spare} && jumpapp -f -c "$app" tamwm -l $app
+    app={irc,ncmpcpp,ranger,vivaldi,vim_one,vim2,spare} && jumpapp -f -c "$app" tamwm -l $app
 
 super + q
     ~/bash_scripts/focus_extra.sh
@@ -36,6 +36,9 @@ super + shift + {r,s,p,t,d,g}
     tamwm -s {1-6}
 
 super + ctrl + {1-4}
+    xdotool getactivewindow set_desktop_for_window {0-3}; sleep .1; tamwm -d {0-3}
+
+super + ctrl + {n,e,i,o}
     xdotool getactivewindow set_desktop_for_window {0-3}; sleep .1; tamwm -d {0-3}
 
 super + Return
