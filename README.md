@@ -21,7 +21,7 @@ Tiling is more flexible, but wastes time adjusting things by hand when a window 
 
 All often used apps have unique binds that jump to their workspace and focus them. This takes the least keystrokes. If the app is closed, that same bind will run and position it suitably. All frequently used apps are run on startup. Achieved using a slightly modified version of [jumpapp](https://github.com/mkropat/jumpapp).
 
-Image with my run-or-raise binds laid out on my keyboard:
+Image with my run-or-raise binds laid out on my keyboard. You can see how the binds correlate to the windows' position on the screen:
 
 ![keybinds](keybinds.png)
 
