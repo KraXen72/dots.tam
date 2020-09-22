@@ -1,6 +1,6 @@
 # Iconize (minimize) window // Close window w/ Picom flicker workaround
 super + {v,b}
-    {xdotool getactivewindow windowminimize,tamwm -x}
+    {xdotool getactivewindow windowminimize,xdotool getactivewindow windowclose}
 
 super + g
     wmctrl -r :ACTIVE: -b toggle,maximized_vert,maximized_horz; sleep .2; xdotool getactivewindow windowactivate
@@ -17,8 +17,8 @@ super + shift + @z
     scrot -s && dunstify -r 1 "Screenshot taken."
 
 # run or raise (workaround atm)
-super + {p,t,d,s,r,w,b}
-    app={irc,ncmpcpp,ranger,vivaldi,vim_one,vim2,spare} && jumpapp -f -c "$app" tamwm -l $app
+super + {p,t,d,s,r,w}
+    app={irc,ncmpcpp,ranger,vivaldi,vim_one,vim2} && jumpapp -f -c "$app" tamwm -l $app
 
 super + q
     ~/bash_scripts/focus_extra.sh

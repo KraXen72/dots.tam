@@ -534,8 +534,11 @@ hi! link SpecialKey GruvboxBg2
 call s:HL('Visual',    s:none,  s:bg3, s:invert_selection)
 hi! link VisualNOS Visual
 
-call s:HL('Search',    s:bg3, s:bg0, s:inverse)
-call s:HL('IncSearch', s:hls_cursor, s:bg0, s:inverse)
+"call s:HL('Search',    s:bg3, s:bg0, s:inverse)
+"call s:HL('IncSearch', s:hls_cursor, s:bg0, s:inverse)
+
+"call s:HL('Search',    s:bg3, s:bg0)
+"call s:HL('IncSearch', s:hls_cursor, s:bg0)
 
 call s:HL('Underlined', s:blue, s:none, s:underline)
 
@@ -1457,3 +1460,9 @@ highlight LineNr guifg=#D8B8B3
 highlight Todo guibg=#F2CC60
 highlight HighlightedyankRegion guibg=#FFD297
 highlight Visual guibg=#FFE497 gui=none
+highlight EasyMotionTarget guibg=#FFE497 guifg=#9d0006
+highlight EasyMotionTarget2First guibg=#FFE497 guifg=#9d0006
+highlight EasyMotionTarget2Second guibg=#FFE497 guifg=#9d0006
+highlight EasyMotionIncSearchDefault guibg=#FFE497 guifg=#9d0006
+highlight IncSearch guibg=#FFE497
+highlight Search guibg=#FFE497
