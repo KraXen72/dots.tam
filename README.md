@@ -25,8 +25,11 @@ Image with my run-or-raise binds laid out on my keyboard. You can see how the bi
 
 ![keybinds](keybinds.png)
 
+## Miscellaneous
+
+![vim](vimdemo.gif)
+
 ![scrot](https://u.teknik.io/7BKDi.png)
 
 ![station](stationwmousepad.jpg)
 
-![vim](vimdemo.gif)
