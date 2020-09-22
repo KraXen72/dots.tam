@@ -19,17 +19,12 @@ Tiling is more flexible, but wastes time adjusting things by hand when a window 
 
 [Alt-tab is slow.](https://vickychijwani.me/blazing-fast-application-switching-in-linux/) Cardinal window switching, putting apps on dedicated workspaces is slow. 
 
-All often used apps have unique binds that jump to their workspace and focus them. This takes the least keystrokes. If the app is closed, that same bind will run and position it suitably. All frequently used apps are run on startup.
+All often used apps have unique binds that jump to their workspace and focus them. This takes the least keystrokes. If the app is closed, that same bind will run and position it suitably. All frequently used apps are run on startup. Achieved using a slightly modified version of [jumpapp](https://github.com/mkropat/jumpapp).
 
-* `super+w`: weechat/first terminal
-* `super+b`: ncmpcpp/second terminal
-* `super+t`: ranger/third terminal
-* `super+f`: web browser
-* `super+c`: vim
-* `super+q`: any application that is none of the above
+Image with my run-or-raise binds laid out on my keyboard. You can see how the binds correlate to the windows' position on the screen:
 
-If multiple instances are open, the bind cycles between them, prioritising instances on the current workspace.
+![keybinds](keybinds.png)
 
-Achieved using a slightly modified version of [jumpapp](https://github.com/mkropat/jumpapp).
+
 
 ![scrot](https://u.teknik.io/7BKDi.png)
