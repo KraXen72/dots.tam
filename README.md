@@ -28,3 +28,5 @@ Image with my run-or-raise binds laid out on my keyboard. You can see how the bi
 ![scrot](https://u.teknik.io/7BKDi.png)
 
 ![station](stationwmousepad.jpg)
+
+![vim](vimdemo.gif)
