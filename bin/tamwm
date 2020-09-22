@@ -155,16 +155,16 @@ move_window_to_preset() {
     font_width=7
     font_height=16
     min_term_cols=86
-    
     gaps=17
+
     top()         { y=36; }
     left()        { x=14;  }
     full_height() { h=1026; }
-    vim_two_pos() { top; left; w=1243; full_height; }
     eighty_six_cols() { w=627; }
+    vim_two_pos() { top; left; w=1243; full_height; }
     left_slave()  { eighty_six_cols;  }
     right_slave() { x=1919; eighty_six_cols; }
-    irc_pos()     { right_slave; y=36; h=386; }
+    irc_pos()     { right_slave; top; h=386; }
     ncmpcpp_pos() { right_slave; y=444; h=242; }
     ranger_pos()  { right_slave; y=708; h=354; }
 

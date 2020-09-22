@@ -10,7 +10,9 @@ elif which gnome-settings-daemon >/dev/null; then
   gnome-settings-daemon &
 fi
 polybar -r tam &
-dunst &
+stalonetray -bg "#fffcfd" --geometry 1x1-250 &
+steam &
+#dunst &
 setxkbmap -option shift:both_capslock &
 #xcape -e 'Shift_R=Return' &
 #/home/sensei/bash_scripts/layout.sh &
@@ -21,3 +23,5 @@ sxhkd &
 pkill mpd
 setxkbmap us
 ~/coding/picom/picom/build/src/picom -c --corner-radius 5 &
+while sleep 4; do setxkbmap us -variant altgr-intl; done &
+xdotool mousemove_relative 90 90

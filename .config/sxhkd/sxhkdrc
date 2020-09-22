@@ -35,6 +35,9 @@ super + {1-4}
 super + shift + {r,s,p,t,d,g}
     tamwm -s {1-6}
 
+super + shift + {Left,Right,Down,Up}
+    xdotool windowmove --relative -- $(get_parent_wid_of $(xdotool getactivewindow)) {-100 y,100 y,x 100,x -100}
+
 super + ctrl + {1-4}
     xdotool getactivewindow set_desktop_for_window {0-3}; sleep .1; tamwm -d {0-3}
 

@@ -33,13 +33,14 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " TODO: learn features
 Plug 'junegunn/fzf.vim' " TODO: learn features
 Plug 'michaeljsmith/vim-indent-object' " text object based on indentation
 Plug 'machakann/vim-highlightedyank' " briefly hilight yank
+Plug 'honza/vim-snippets' " snippets for all languages
 
 call plug#end()
 
 " ################
 " ### MAPPINGS ###
 " ################
-let mapleader = "\\"
+let mapleader = ","
 
 " NEW FUNCTIONALITY / HIGH IMPORTANCE QOL
 " #######################################
@@ -52,12 +53,12 @@ tnoremap <Esc> <C-\><C-n> | " exit terminal mode with esc
 
 " BUFFER MANAGEMENT
 nnoremap ,, ,
-nnoremap ,o :Files<cr>
-nnoremap ,b :Buffers<CR>
+nnoremap <leader>o :Files<cr>
+nnoremap <leader>b :Buffers<CR>
 nnoremap <leader><Tab> :Buffers<CR>
 nnoremap <silent><Leader><C-q> :bd!<Cr>
 nnoremap <silent><C-q> :bn<bar>:bd!#<CR>
-nnoremap <silent>,m :bp<CR>
+nnoremap <silent>,h :bp<CR>
 nnoremap <silent>,. :bn<CR>
 nmap <Leader>1 <Plug>lightline#bufferline#go(1)
 nmap <Leader>2 <Plug>lightline#bufferline#go(2)
@@ -102,14 +103,14 @@ vnoremap c <esc>v
 " PLUGIN MAPPINGS
 " ###############
 " 2-character Sneak (default)
-nmap <Del> <Plug>Sneak_s
-nmap <BS> <Plug>Sneak_S
-" visual-mode
-xmap <Del> <Plug>Sneak_s
-xmap <BS> <Plug>Sneak_S
-" operator-pending-mode
-omap <Del> <Plug>Sneak_s
-omap <BS> <Plug>Sneak_S
+"nmap <Del> <Plug>Sneak_s
+"nmap <BS> <Plug>Sneak_S
+"" visual-mode
+"xmap <Del> <Plug>Sneak_s
+"xmap <BS> <Plug>Sneak_S
+"" operator-pending-mode
+"omap <Del> <Plug>Sneak_s
+"omap <BS> <Plug>Sneak_S
 
 nnoremap s s
 nnoremap S S
@@ -121,9 +122,12 @@ map <C-n> :NERDTreeToggle<CR>
 
 " EasyMotion mappings
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
+let g:EasyMotion_keys = 'arstgmneioqwfpbjluyzxcdvkh'
 map <Leader> <Plug>(easymotion-prefix)
-nmap <leader>s <Plug>(easymotion-f)
-nmap <leader>S <Plug>(easymotion-F)
+nmap <Del> <Plug>(easymotion-f)
+nmap <BS> <Plug>(easymotion-F)
+vmap <Del> <Plug>(easymotion-f)
+vmap <BS> <Plug>(easymotion-F)
 nmap <leader>w <Plug>(easymotion-w)
 nmap <leader>W <Plug>(easymotion-W)
 nmap <leader>b <Plug>(easymotion-b)
@@ -231,6 +235,7 @@ set encoding=utf-8
 " ########################
 " ### PLUGIN SETTINGS ###
 " #######################
+
 
 " EASY ESCAPE
 let g:easyescape_chars = { "j": 1, "k": 1 }
@@ -341,8 +346,8 @@ autocmd BufRead,BufEnter,BufNewFile * LeadingSpaceEnable
 autocmd FileType json syntax match Comment +\/\/.\+$+
 
 " Up and Down don't traverse coc autocomplete
-inoremap <Down> <C-o><Down>
-inoremap <Up> <C-o><Up>
+inoremap <expr> <down> pumvisible() ? "\<C-e> \<Down>" : "\<Down>"
+inoremap <expr> <up> pumvisible() ? "\<C-e> \<up>" : "\<up>"
  "nnoremap <Leader>c :CocCommand<space>
 
 set nobackup
@@ -363,13 +368,41 @@ function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
-imap <C-;> <Plug>(coc-snippets-expand)
-inoremap <silent><expr> <Tab>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<Tab>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
+" Use <C-l> for trigger snippet expand.
+imap <C-l> <Plug>(coc-snippets-expand)
+
+" Use <C-j> for select text for visual placeholder of snippet.
+vmap <C-j> <Plug>(coc-snippets-select)
+
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
+
+" Use <C-j> for both expand and jump (make expand higher priority.)
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+
+" Use <leader>x for convert visual selected code to snippet
+xmap <leader>x  <Plug>(coc-convert-snippet)
+"inoremap <silent><expr> <Tab>
+      "\ pumvisible() ? "\<C-n>" :
+      "\ <SID>check_back_space() ? "\<Tab>" :
+      "\ coc#refresh()
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+"let g:coc_snippet_next = '<tab>'
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
